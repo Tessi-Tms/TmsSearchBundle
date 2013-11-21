@@ -1,0 +1,20 @@
+fos_elastica:
+    clients:
+        node0: { host: %elastica_host%, port: %elastica_port% }
+    indexes:
+        participations:
+            client: node0
+            types:
+                participation:
+                    #persistence:
+                    #    driver: mongodb
+                    #    model: Tms\Bundle\ParticipationBundle\Document\Participation
+                    #    provider: ~
+                    #    repository: Tms\Bundle\ParticipationBundle\Document\ParticipationRepository
+                    mappings:
+                        firstName: { type: string }
+                        lastName: { type: string }
+                        zipCode: { type: string }
+                        msDataRef: { type: string }
+                        gender: { type: string }
+                        phone: { type: string }

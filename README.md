@@ -1,2 +1,4 @@
 TmsSearchBundle
-===============
+======================
+
+Search bundle

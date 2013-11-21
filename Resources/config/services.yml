@@ -1,0 +1,13 @@
+parameters:
+    elastica_host: localhost
+    elastica_port: 9200
+
+services:
+    index_factory:
+        class: Tms\Bundle\SearchBundle\Index\IndexFactory
+
+    index_manager:
+        class: Tms\Bundle\SearchBundle\Index\ElasticaIndex
+        factory_service: index_factory
+        factory_method: get
+        arguments: [@service_container]
