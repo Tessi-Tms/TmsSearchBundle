@@ -13,9 +13,9 @@ class TestController extends Controller
      */
     public function searchAction($slug)
     {
-        $indexManager = $this->container->get('index_manager');
+        $adaptedIndex = $this->container->get('adapted_index');
 
-        $data = $indexManager->search($slug);
+        $data = $adaptedIndex->search($slug);
         die(var_dump($data));
     }
 

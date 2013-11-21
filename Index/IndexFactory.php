@@ -8,19 +8,19 @@ class IndexFactory
     {
         $engine = $container->getParameter('tms_search.engine');
         $index = $container->getParameter('tms_search.index');
-        $elasticIndex = null;
+        $adaptedIndex = null;
         try {
             switch ($engine) {
                 case 'elastica':
-                    $elasticIndex = new Elastica($container->get('fos_elastica.index.' . $index));
+                    $adaptedIndex = new Elastica($container->get('fos_elastica.index.' . $index));
                     break;
 
                 case 'elasticsearch':
                     $parameters = array();
                     $parameters['hosts'] = array('localhost:9200');
                     $client = new \Elasticsearch\Client($parameters);
-                    $elasticIndex = new Elasticsearch($client);
-                    $elasticIndex->setBaseParameters(array('index' => $index, 'type' => 'participation'));
+                    $adaptedIndex = new Elasticsearch($client);
+                    $adaptedIndex->setBaseParameters(array('index' => $index, 'type' => 'participation'));
                     break;
 
                 default:
@@ -31,6 +31,6 @@ class IndexFactory
             die($exception->getMessage());
         }
 
-        return $elasticIndex;
+        return $adaptedIndex;
     }
 }

@@ -3,7 +3,7 @@
 namespace Tms\Bundle\SearchBundle\Index;
 
 
-abstract class BaseIndex implements IndexInterface
+abstract class AbstractIndex implements IndexInterface
 {
     private $index;
 
@@ -12,7 +12,7 @@ abstract class BaseIndex implements IndexInterface
         $this->index = $client;
     }
 
-    public function getIndex()
+    protected function getIndex()
     {
         return $this->index;
     }

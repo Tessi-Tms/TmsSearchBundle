@@ -3,7 +3,7 @@
 namespace Tms\Bundle\SearchBundle\Index;
 
 
-final class Elasticsearch extends BaseIndex
+final class Elasticsearch extends AbstractIndex
 {
     private $baseParameters = array();
 
@@ -19,7 +19,7 @@ final class Elasticsearch extends BaseIndex
     public function search($slug)
     {
         $parameters = array();
-        $parameters['body']['query']['match']['lastName'] = $slug;
+        $parameters['body']['query']['filter']['lastName'] = $slug;
         $parameters = array_merge($parameters, $this->baseParameters);
 
         $response = $this->getIndex()->search($parameters);
@@ -31,6 +31,13 @@ final class Elasticsearch extends BaseIndex
 
     public function index($object)
     {
+        $parameters = array();
+        $parameters['index'] = $this->baseParameters['index'];
+        $parameters['type']  = 'participation';
+        $parameters['id']    = $object->getId();
+        $parameters['body']  = json_decode($object->getSearch(), true);
+
+        return $this->getIndex()->index($parameters);
     }
 
     public function delete($id)
@@ -41,8 +48,16 @@ final class Elasticsearch extends BaseIndex
     {
     }
 
-    public function bulk($parameters)
+    public function bulk($objects)
     {
+        $body = "";
+        foreach ($objects as $object) {
+            $searchFields = json_decode($object->getSearch(), true);
+            $index = array('index' => array('_index' => $this->baseParameters['index'],
+                                            '_type'  => 'participation',
+                                            '_id'    => $object->getId()));
+            $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
+        }
+        $this->getIndex()->bulk(array('body' => $body));
     }
-
 }

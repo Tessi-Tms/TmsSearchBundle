@@ -6,8 +6,8 @@ services:
     index_factory:
         class: Tms\Bundle\SearchBundle\Index\IndexFactory
 
-    index_manager:
-        class: Tms\Bundle\SearchBundle\Index\ElasticaIndex
+    adapted_index:
+        class: Tms\Bundle\SearchBundle\Index\AbstractIndex
         factory_service: index_factory
         factory_method: get
         arguments: [@service_container]

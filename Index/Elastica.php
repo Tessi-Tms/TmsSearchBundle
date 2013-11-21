@@ -6,7 +6,7 @@ use Elastica\Type;
 use Elastica\Document as Document;
 use Elastica\ResultSet;
 
-final class Elastica extends BaseIndex
+final class Elastica extends AbstractIndex
 {
     /**
      * @param string $slug
@@ -40,7 +40,7 @@ final class Elastica extends BaseIndex
         return $type->getDocument($id);
     }
 
-    public function bulk($parameters)
+    public function bulk($objects)
     {
     }
 
