@@ -8,20 +8,29 @@ class IndexFactory
     {
         $engine = $container->getParameter('tms_search.engine');
         $index = $container->getParameter('tms_search.index');
-        $indexManager = null;
+        $elasticIndex = null;
         try {
-            if ('elastica' === $engine) {
-                $indexManager = $indexManager = new ElasticaIndex($container->get('fos_elastica.index.' . $index));
-                if (!$indexManager) {
-                    throw new \Exception('Index not available');
-                }
-            } else {
-                throw new \Exception('Search engine not available');
+            switch ($engine) {
+                case 'elastica':
+                    $elasticIndex = new Elastica($container->get('fos_elastica.index.' . $index));
+                    break;
+
+                case 'elasticsearch':
+                    $parameters = array();
+                    $parameters['hosts'] = array('localhost:9200');
+                    $client = new \Elasticsearch\Client($parameters);
+                    $elasticIndex = new Elasticsearch($client);
+                    $elasticIndex->setBaseParameters(array('index' => $index, 'type' => 'participation'));
+                    break;
+
+                default:
+                    throw new \Exception('Search engine not available');
+                    break;
             }
         } catch (\Exception $exception) {
             die($exception->getMessage());
         }
 
-        return $indexManager;
+        return $elasticIndex;
     }
 }

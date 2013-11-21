@@ -2,15 +2,14 @@
 
 namespace Tms\Bundle\SearchBundle\Index;
 
-use Elastica\Index as Index;
 
 abstract class BaseIndex implements IndexInterface
 {
     private $index;
 
-    public function __construct(Index $index)
+    public function __construct($client)
     {
-        $this->index = $index;
+        $this->index = $client;
     }
 
     public function getIndex()
