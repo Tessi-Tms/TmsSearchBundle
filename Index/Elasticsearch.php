@@ -2,10 +2,19 @@
 
 namespace Tms\Bundle\SearchBundle\Index;
 
-
 final class Elasticsearch extends AbstractIndex
 {
     private $baseParameters = array();
+
+    private function buildObjectFromResponse($hit)
+    {
+        $object = new \stdClass();
+        $object->id = $hit['_id'];
+        foreach ($hit['_source'] as $key => $value) {
+            $object->$key = $value;
+        }
+        return $object;
+    }
 
     public function setBaseParameters(array $parameters)
     {
@@ -19,14 +28,15 @@ final class Elasticsearch extends AbstractIndex
     public function search($slug)
     {
         $parameters = array();
-        $parameters['body']['query']['filter']['lastName'] = $slug;
+        $parameters['body']['query']['query_string']['query'] = $slug;
         $parameters = array_merge($parameters, $this->baseParameters);
 
         $response = $this->getIndex()->search($parameters);
+        $resultSet = array();
         if (isset($response['hits']) && isset($response['hits']['hits'])) {
-            return $response['hits']['hits'];
+            $resultSet = array_map(array($this, 'buildObjectFromResponse'), $response['hits']['hits']);
         }
-        return null;
+        return $resultSet;
     }
 
     public function index($object)
@@ -42,10 +52,20 @@ final class Elasticsearch extends AbstractIndex
 
     public function delete($id)
     {
+        $parameters = array();
+        $parameters['id'] = $id;
+        $parameters = array_merge($parameters, $this->baseParameters);
+        $response = $this->getIndex()->delete($parameters);
+        return $response;
     }
 
     public function get($id)
     {
+        $parameters = array();
+        $parameters['id'] = $id;
+        $parameters = array_merge($parameters, $this->baseParameters);
+        $response = $this->getIndex()->get($parameters);
+        return $response;
     }
 
     public function bulk($objects)
