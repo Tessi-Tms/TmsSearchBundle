@@ -17,7 +17,7 @@ class IndexFactory
 
                 case 'elasticsearch':
                     $parameters = array();
-                    $parameters['hosts'] = array('localhost:9200');
+                    $parameters['hosts'] = array($container->getParameter('tms_search_host') . ':' . $container->getParameter('tms_search_port'));
                     $client = new \Elasticsearch\Client($parameters);
                     $adaptedIndex = new Elasticsearch($client);
                     $adaptedIndex->setBaseParameters(array('index' => $index, 'type' => 'participation'));

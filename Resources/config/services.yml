@@ -1,7 +1,3 @@
-parameters:
-    elastica_host: localhost
-    elastica_port: 9200
-
 services:
     index_factory:
         class: Tms\Bundle\SearchBundle\Index\IndexFactory
