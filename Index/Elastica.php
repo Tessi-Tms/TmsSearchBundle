@@ -41,21 +41,28 @@ final class Elastica extends AbstractIndex
         return $type->addDocument($document);
     }
 
+    /**
+     *
+     * @param string $id
+     */
     public function delete($id)
     {
         $type = $this->getIndex()->getType('participation');
         return $type->deleteById($id);
     }
 
+    /**
+     *
+     * @param string $id
+     */
     public function get($id)
     {
         $type = $this->getIndex()->getType('participation');
         return $type->getDocument($id);
     }
 
-    public function bulk($objects)
+    public function bulk($documents)
     {
         throw new \Exception('This method can not be executed');
     }
-
 }

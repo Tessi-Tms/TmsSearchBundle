@@ -23,6 +23,7 @@ final class Elasticsearch extends AbstractIndex
     }
 
     /**
+     *
      * @param string $slug
      */
     public function search($slug)
@@ -50,6 +51,10 @@ final class Elasticsearch extends AbstractIndex
         return $this->getIndex()->index($parameters);
     }
 
+    /**
+     *
+     * @param string $id
+     */
     public function delete($id)
     {
         $parameters = array();
@@ -59,6 +64,10 @@ final class Elasticsearch extends AbstractIndex
         return $response;
     }
 
+    /**
+     *
+     * @param string $id
+     */
     public function get($id)
     {
         $parameters = array();
@@ -68,16 +77,19 @@ final class Elasticsearch extends AbstractIndex
         return $response;
     }
 
-    public function bulk($objects)
+    public function bulk($documents)
     {
         $body = "";
-        foreach ($objects as $object) {
-            $searchFields = json_decode($object->getSearch(), true);
+        $i = 0;
+        foreach ($documents as $document) {
+            $i++;
+            $searchFields = json_decode($document['search'], true);
             $index = array('index' => array('_index' => $this->baseParameters['index'],
                                             '_type'  => 'participation',
-                                            '_id'    => $object->getId()));
+                                            '_id'    => $document['_id']->{'$id'}));
             $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
         }
         $this->getIndex()->bulk(array('body' => $body));
+        return $i;
     }
 }

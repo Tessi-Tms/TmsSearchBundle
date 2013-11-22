@@ -12,5 +12,5 @@ interface IndexInterface
 
     public function get($id);
 
-    public function bulk($objects);
+    public function bulk($documents);
 }
