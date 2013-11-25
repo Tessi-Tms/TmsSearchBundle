@@ -20,7 +20,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('tms_search');
 
-        /*
         $rootNode
             ->children()
                 ->arrayNode('indexes')
@@ -47,18 +46,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
-        */
-
-
-        $rootNode
-            ->children()
-                ->scalarNode('engine')
-                ->end()
-                ->scalarNode('index')
-                ->end()
-            ->end()
-        ;
-
 
         return $treeBuilder;
     }

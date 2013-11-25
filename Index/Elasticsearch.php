@@ -4,7 +4,8 @@ namespace Tms\Bundle\SearchBundle\Index;
 
 final class Elasticsearch extends AbstractIndex
 {
-    private $baseParameters = array();
+    private $index;
+    private $type;
 
     private function buildObjectFromResponse($hit)
     {
@@ -16,10 +17,30 @@ final class Elasticsearch extends AbstractIndex
         return $object;
     }
 
-    public function setBaseParameters(array $parameters)
+    /**
+     *
+     * @param string $index
+     *
+     * @return \Tms\Bundle\SearchBundle\Index\Elasticsearch
+     */
+    public function setIndex($index)
     {
-        $this->baseParameters['index'] = $parameters['index'];
-        $this->baseParameters['type'] = $parameters['type'];
+        $this->index = $index;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $type
+     *
+     * @return \Tms\Bundle\SearchBundle\Index\Elasticsearch
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     /**
@@ -30,9 +51,9 @@ final class Elasticsearch extends AbstractIndex
     {
         $parameters = array();
         $parameters['body']['query']['query_string']['query'] = $slug;
-        $parameters = array_merge($parameters, $this->baseParameters);
+        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
 
-        $response = $this->getIndex()->search($parameters);
+        $response = $this->getClient()->search($parameters);
         $resultSet = array();
         if (isset($response['hits']) && isset($response['hits']['hits'])) {
             $resultSet = array_map(array($this, 'buildObjectFromResponse'), $response['hits']['hits']);
@@ -43,12 +64,12 @@ final class Elasticsearch extends AbstractIndex
     public function index($object)
     {
         $parameters = array();
-        $parameters['index'] = $this->baseParameters['index'];
-        $parameters['type']  = 'participation';
+        $parameters['index'] = $this->index;
+        $parameters['type']  = $this->type;
         $parameters['id']    = $object->getId();
         $parameters['body']  = json_decode($object->getSearch(), true);
 
-        return $this->getIndex()->index($parameters);
+        return $this->getClient()->index($parameters);
     }
 
     /**
@@ -59,8 +80,8 @@ final class Elasticsearch extends AbstractIndex
     {
         $parameters = array();
         $parameters['id'] = $id;
-        $parameters = array_merge($parameters, $this->baseParameters);
-        $response = $this->getIndex()->delete($parameters);
+        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
+        $response = $this->getClient()->delete($parameters);
         return $response;
     }
 
@@ -72,32 +93,39 @@ final class Elasticsearch extends AbstractIndex
     {
         $parameters = array();
         $parameters['id'] = $id;
-        $parameters = array_merge($parameters, $this->baseParameters);
-        $response = $this->getIndex()->get($parameters);
+        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
+        $response = $this->getClient()->get($parameters);
         return $response;
     }
 
-    public function bulk($documents)
+    public function bulk($documents, array $fields)
     {
         $body = "";
         $i = 0;
         foreach ($documents as $document) {
-            $i++;
+            //die(var_dump($document));
             /*
-            $searchFields = json_decode($document->getSearch(), true);
-            $index = array('index' => array('_index' => $this->baseParameters['index'],
-                    '_type'  => 'participation',
-                    '_id'    => $document->getId()));
-            $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
-            */
             $searchFields = json_decode($document['search'], true);
-            $index = array('index' => array('_index' => $this->baseParameters['index'],
-                                            '_type'  => 'participation',
+            $index = array('index' => array('_index' => $this->index,
+                                            '_type'  => $this->type,
                                             '_id'    => $document['_id']->{'$id'}));
             $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
+            $i++;
+            */
 
+            $fieldsToIndex = array();
+            foreach ($fields as $field) {
+                $fieldsToIndex[$field] = $document[$field];
+            }
+            //die(var_dump($fieldsToIndex));
+            $index = array('index' => array('_index' => $this->index,
+                    '_type'  => $this->type,
+                    '_id'    => $document['_id']->{'$id'}));
+            $body .= json_encode($index) . "\n" . json_encode($fieldsToIndex) . "\n\n";
+            $i++;
+            //die(var_dump($body));
         }
-        $this->getIndex()->bulk(array('body' => $body));
+        $this->getClient()->bulk(array('body' => $body));
         return $i;
     }
 }

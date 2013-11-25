@@ -5,15 +5,15 @@ namespace Tms\Bundle\SearchBundle\Index;
 
 abstract class AbstractIndex implements IndexInterface
 {
-    private $index;
+    private $client;
 
     public function __construct($client)
     {
-        $this->index = $client;
+        $this->client = $client;
     }
 
-    protected function getIndex()
+    protected function getClient()
     {
-        return $this->index;
+        return $this->client;
     }
 }

@@ -6,8 +6,12 @@ class IndexFactory
 {
     public function get($container)
     {
+        $engine = 'elasticsearch';
+        $index = 'tms_participations';
+        /*
         $engine = $container->getParameter('tms_search.engine');
         $index = $container->getParameter('tms_search.index');
+        */
         $adaptedIndex = null;
         try {
             switch ($engine) {
@@ -20,7 +24,8 @@ class IndexFactory
                     $parameters['hosts'] = array($container->getParameter('tms_search_host') . ':' . $container->getParameter('tms_search_port'));
                     $client = new \Elasticsearch\Client($parameters);
                     $adaptedIndex = new Elasticsearch($client);
-                    $adaptedIndex->setBaseParameters(array('index' => $index, 'type' => 'participation'));
+                    $adaptedIndex->setIndex('tms_participations');
+                    $adaptedIndex->setType('participation');
                     break;
 
                 default:

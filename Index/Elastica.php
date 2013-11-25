@@ -29,13 +29,13 @@ final class Elastica extends AbstractIndex
      */
     public function search($slug)
     {
-        $resultSet = $this->getIndex()->search($slug);
+        $resultSet = $this->getClient()->search($slug);
         return $this->cleanResultSet($resultSet);
     }
 
     public function index($object)
     {
-        $type = $this->getIndex()->getType('participation');
+        $type = $this->getClient()->getType('participation');
         $searchField = json_decode($object->getSearch(), true);
         $document = new Document($object->getId(), $searchField);
         return $type->addDocument($document);
@@ -47,7 +47,7 @@ final class Elastica extends AbstractIndex
      */
     public function delete($id)
     {
-        $type = $this->getIndex()->getType('participation');
+        $type = $this->getClient()->getType('participation');
         return $type->deleteById($id);
     }
 
@@ -57,7 +57,7 @@ final class Elastica extends AbstractIndex
      */
     public function get($id)
     {
-        $type = $this->getIndex()->getType('participation');
+        $type = $this->getClient()->getType('participation');
         return $type->getDocument($id);
     }
 }
