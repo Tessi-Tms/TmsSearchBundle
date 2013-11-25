@@ -19,4 +19,15 @@ class TestController extends Controller
         die(var_dump($data));
     }
 
+    /**
+     * @Route("/search_mongo/{slug}")
+     */
+    public function searchMongoAction($slug)
+    {
+        $participationHandler = $this->container->get('tms_participation.handler.participation');
+        $participations = $participationHandler->retrieveRawParticipations(
+            null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null, $slug);
+        die(var_dump($participations));
+    }
 }

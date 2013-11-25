@@ -83,11 +83,19 @@ final class Elasticsearch extends AbstractIndex
         $i = 0;
         foreach ($documents as $document) {
             $i++;
+            /*
+            $searchFields = json_decode($document->getSearch(), true);
+            $index = array('index' => array('_index' => $this->baseParameters['index'],
+                    '_type'  => 'participation',
+                    '_id'    => $document->getId()));
+            $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
+            */
             $searchFields = json_decode($document['search'], true);
             $index = array('index' => array('_index' => $this->baseParameters['index'],
                                             '_type'  => 'participation',
                                             '_id'    => $document['_id']->{'$id'}));
             $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
+
         }
         $this->getIndex()->bulk(array('body' => $body));
         return $i;

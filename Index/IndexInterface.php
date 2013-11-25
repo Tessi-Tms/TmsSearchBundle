@@ -11,6 +11,4 @@ interface IndexInterface
     public function delete($id);
 
     public function get($id);
-
-    public function bulk($documents);
 }

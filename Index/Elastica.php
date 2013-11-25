@@ -60,9 +60,4 @@ final class Elastica extends AbstractIndex
         $type = $this->getIndex()->getType('participation');
         return $type->getDocument($id);
     }
-
-    public function bulk($documents)
-    {
-        throw new \Exception('This method can not be executed');
-    }
 }

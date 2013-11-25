@@ -22,6 +22,11 @@ class TmsSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        /*
+        var_dump($config['indexes']['tms_participation']['participation']);
+        die();
+        */
+
         $container->setParameter('tms_search.engine', $config['engine']);
         $container->setParameter('tms_search.index', $config['index']);
 
