@@ -2,10 +2,21 @@
 
 namespace Tms\Bundle\SearchBundle\Index;
 
-final class Elasticsearch extends AbstractIndex
+final class Elasticsearch implements IndexInterface
 {
+    private $client;
     private $index;
     private $type;
+
+    public function __construct(\Elasticsearch\Client $client)
+    {
+        $this->client = $client;
+    }
+
+    public function getClient()
+    {
+        return $this->client;
+    }
 
     private function buildObjectFromResponse($hit)
     {
@@ -84,6 +95,7 @@ final class Elasticsearch extends AbstractIndex
         $parameters['id'] = $id;
         $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
         $response = $this->getClient()->delete($parameters);
+
         return $response;
     }
 
@@ -97,6 +109,7 @@ final class Elasticsearch extends AbstractIndex
         $parameters['id'] = $id;
         $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
         $response = $this->getClient()->get($parameters);
+
         return $response;
     }
 

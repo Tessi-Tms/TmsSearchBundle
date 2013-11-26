@@ -13,8 +13,8 @@ class TestController extends Controller
      */
     public function searchAction($slug)
     {
-        $adaptedIndex = $this->container->get('adapted_index');
-
+        $adaptedIndexes = $this->container->get('tms_search.adapted_index');
+        $adaptedIndex = $adaptedIndexes->getIndex('tms_participations', 'participation');
         $data = $adaptedIndex->search($slug);
         die(var_dump($data));
     }

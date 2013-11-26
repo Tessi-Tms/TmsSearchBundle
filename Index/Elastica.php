@@ -6,8 +6,15 @@ use Elastica\Type;
 use Elastica\Document as Document;
 use Elastica\ResultSet as ResultSet;
 
-final class Elastica extends AbstractIndex
+final class Elastica implements IndexInterface
 {
+    private $client;
+
+    public function __construct($client)
+    {
+        $this->client = $client;
+    }
+
     private function cleanResultSet(ResultSet $resultSet)
     {
         $data = array();
