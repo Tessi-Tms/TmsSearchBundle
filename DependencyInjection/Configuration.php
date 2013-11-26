@@ -28,15 +28,8 @@ class Configuration implements ConfigurationInterface
                         ->useAttributeAsKey('name')
                         ->prototype('array')
                             ->children()
-                                ->scalarNode('class')->isRequired()->end()
-                                ->arrayNode('provider')
-                                    ->children()
-                                        ->scalarNode('name')->end()
-                                        ->arrayNode('options')
-                                            ->prototype('variable')->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
+                                ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
+                                ->append($this->addProviderNode())
                                 ->arrayNode('mapping')
                                     ->prototype('variable')->end()
                                 ->end()
@@ -48,5 +41,22 @@ class Configuration implements ConfigurationInterface
         ;
 
         return $treeBuilder;
+    }
+
+    public function addProviderNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('provider');
+
+        $node
+            ->children()
+                ->scalarNode('name')->isRequired()->cannotBeEmpty()->end()
+                ->arrayNode('options')
+                    ->prototype('variable')->end()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
     }
 }

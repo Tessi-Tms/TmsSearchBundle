@@ -9,13 +9,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class TestController extends Controller
 {
     /**
-     * @Route("/search/{slug}")
+     * @Route("/search/{query}")
      */
-    public function searchAction($slug)
+    public function searchAction($query)
     {
         $adaptedIndexes = $this->container->get('tms_search.adapted_index');
         $adaptedIndex = $adaptedIndexes->getIndex('tms_participations', 'participation');
-        $data = $adaptedIndex->search($slug);
+        $data = $adaptedIndex->search($query, false);
         die(var_dump($data));
     }
 

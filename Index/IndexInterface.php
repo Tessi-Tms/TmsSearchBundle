@@ -4,7 +4,7 @@ namespace Tms\Bundle\SearchBundle\Index;
 
 interface IndexInterface
 {
-    public function search($slug);
+    public function search($slug, $isIdOnlyFieldToBeReturned);
 
     public function index($object);
 

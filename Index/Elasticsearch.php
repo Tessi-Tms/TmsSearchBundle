@@ -7,26 +7,11 @@ final class Elasticsearch implements IndexInterface
     private $client;
     private $index;
     private $type;
+    private $mapping;
 
     public function __construct(\Elasticsearch\Client $client)
     {
         $this->client = $client;
-    }
-
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    private function buildObjectFromResponse($hit)
-    {
-        $object = new \stdClass();
-        $object->id = $hit['_id'];
-        foreach ($hit['_source'] as $key => $value) {
-            $object->$key = $value;
-        }
-
-        return $object;
     }
 
     /**
@@ -55,23 +40,65 @@ final class Elasticsearch implements IndexInterface
         return $this;
     }
 
+    public function setMapping($mapping)
+    {
+        $this->mapping = mapping;
+
+        return $this;
+    }
+
     /**
      *
-     * @param string $slug
+     * @param array $hit
+     *
+     * @return \stdClass $object
      */
-    public function search($slug)
+    private function buildObjectFromResultSet(array $hit)
     {
-        $parameters = array();
-        $parameters['body']['query']['query_string']['query'] = $slug;
-        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
-
-        $response = $this->getClient()->search($parameters);
-        $resultSet = array();
-        if (isset($response['hits']) && isset($response['hits']['hits'])) {
-            $resultSet = array_map(array($this, 'buildObjectFromResponse'), $response['hits']['hits']);
+        $object = new \stdClass();
+        $object->id = $hit['_id'];
+        if (isset($hit['_source'])) {
+            foreach ($hit['_source'] as $key => $value) {
+                $object->$key = $value;
+            }
         }
 
-        return $resultSet;
+        return $object;
+    }
+
+    /**
+     *
+     * @param string $query
+     * @param boolean $isIdOnlyFieldToBeReturned
+     * @throws \Exception
+     *
+     * @return array $data:
+     */
+    public function search($query, $isIdOnlyFieldToBeReturned = true)
+    {
+        if (empty($query)) {
+            throw new \Exception('Not a valid query');
+        }
+
+        $parameters = array();
+        if (true === $isIdOnlyFieldToBeReturned) {
+            $parameters['body']['fields'] = array('id');
+        }
+        $parameters['body']['query']['query_string']['query'] = $query;
+        $parameters = array_merge(
+            $parameters,
+            array('index' => $this->index,
+                  'type' => $this->type)
+        );
+
+        $resultSet = $this->client->search($parameters);
+
+        $data = array();
+        if (isset($resultSet['hits']) && isset($resultSet['hits']['hits'])) {
+            $data = array_map(array($this, 'buildObjectFromResultSet'), $resultSet['hits']['hits']);
+        }
+
+        return $data;
     }
 
     public function index($object)
@@ -82,7 +109,7 @@ final class Elasticsearch implements IndexInterface
         $parameters['id']    = $object->getId();
         $parameters['body']  = json_decode($object->getSearch(), true);
 
-        return $this->getClient()->index($parameters);
+        return $this->client->index($parameters);
     }
 
     /**
@@ -91,12 +118,19 @@ final class Elasticsearch implements IndexInterface
      */
     public function delete($id)
     {
+        if (empty($id)) {
+            throw new \Exception('Not a valid id');
+        }
         $parameters = array();
         $parameters['id'] = $id;
-        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
-        $response = $this->getClient()->delete($parameters);
+        $parameters = array_merge(
+            $parameters,
+            array('index' => $this->index,
+                  'type' => $this->type)
+        );
+        $data = $this->client->delete($parameters);
 
-        return $response;
+        return $data;
     }
 
     /**
@@ -105,12 +139,19 @@ final class Elasticsearch implements IndexInterface
      */
     public function get($id)
     {
+        if (empty($id)) {
+            throw new \Exception('Not a valid id');
+        }
         $parameters = array();
         $parameters['id'] = $id;
-        $parameters = array_merge($parameters, array('index' => $this->index, 'type' => $this->type));
-        $response = $this->getClient()->get($parameters);
+        $parameters = array_merge(
+            $parameters,
+            array('index' => $this->index,
+                  'type' => $this->type)
+        );
+        $data = $this->client->get($parameters);
 
-        return $response;
+        return $data;
     }
 
     /**
@@ -118,7 +159,7 @@ final class Elasticsearch implements IndexInterface
      * @param \Doctrine\MongoDB\Cursor $documents
      * @param array $fields
      *
-     * @return number $i
+     * @return integer $i
      */
     public function bulk(\Doctrine\MongoDB\Cursor $documents, array $fields)
     {
@@ -137,7 +178,7 @@ final class Elasticsearch implements IndexInterface
             $body .= json_encode($index) . "\n" . json_encode($fieldsToIndex) . "\n\n";
             $i++;
         }
-        $this->getClient()->bulk(array('body' => $body));
+        $this->client->bulk(array('body' => $body));
         return $i;
     }
 }
