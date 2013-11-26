@@ -14,6 +14,7 @@ final class Elasticsearch extends AbstractIndex
         foreach ($hit['_source'] as $key => $value) {
             $object->$key = $value;
         }
+
         return $object;
     }
 
@@ -58,6 +59,7 @@ final class Elasticsearch extends AbstractIndex
         if (isset($response['hits']) && isset($response['hits']['hits'])) {
             $resultSet = array_map(array($this, 'buildObjectFromResponse'), $response['hits']['hits']);
         }
+
         return $resultSet;
     }
 
@@ -98,32 +100,29 @@ final class Elasticsearch extends AbstractIndex
         return $response;
     }
 
-    public function bulk($documents, array $fields)
+    /**
+     *
+     * @param \Doctrine\MongoDB\Cursor $documents
+     * @param array $fields
+     *
+     * @return number $i
+     */
+    public function bulk(\Doctrine\MongoDB\Cursor $documents, array $fields)
     {
         $body = "";
         $i = 0;
         foreach ($documents as $document) {
-            //die(var_dump($document));
-            /*
-            $searchFields = json_decode($document['search'], true);
-            $index = array('index' => array('_index' => $this->index,
-                                            '_type'  => $this->type,
-                                            '_id'    => $document['_id']->{'$id'}));
-            $body .= json_encode($index) . "\n" . json_encode($searchFields) . "\n\n";
-            $i++;
-            */
-
             $fieldsToIndex = array();
             foreach ($fields as $field) {
                 $fieldsToIndex[$field] = $document[$field];
             }
-            //die(var_dump($fieldsToIndex));
-            $index = array('index' => array('_index' => $this->index,
-                    '_type'  => $this->type,
-                    '_id'    => $document['_id']->{'$id'}));
+            $index = array('index' => array(
+                '_index' => $this->index,
+                '_type'  => $this->type,
+                '_id'    => $document['_id']->{'$id'})
+            );
             $body .= json_encode($index) . "\n" . json_encode($fieldsToIndex) . "\n\n";
             $i++;
-            //die(var_dump($body));
         }
         $this->getClient()->bulk(array('body' => $body));
         return $i;
