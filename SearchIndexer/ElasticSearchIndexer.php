@@ -27,12 +27,8 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
      *
      * @return array $data:
      */
-    public function search($query)
+    public function search(IndexableElementInterface $element, $query)
     {
-        if (empty($query)) {
-            throw new \Exception('Not a valid query');
-        }
-
         $parameters = array();
         $parameters['body']['query']['query_string']['query'] = $query;
         $parameters = array_merge(
@@ -46,7 +42,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $data = array();
         if (isset($resultSet['hits']) && isset($resultSet['hits']['hits'])) {
             $data = $resultSet['hits']['hits'];
-            //$data = array_map(array($this, 'buildObjectFromResultSet'), $resultSet['hits']['hits']);
+            die(var_dump($data));
         }
 
         return $data;

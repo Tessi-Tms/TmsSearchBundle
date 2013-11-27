@@ -41,9 +41,19 @@ class SearchIndexHandler
      * @return array
      *
      */
-    public function search()
+    public function search(IndexableElementInterface $element, $query)
     {
+        $data = array();
+        try {
+            $data = $this
+                ->getIndexer($element)
+                ->search($element, $query)
+            ;
+        } catch (\Exception $e) {
+            return false;
+        }
 
+        return data;
     }
 
     /**
