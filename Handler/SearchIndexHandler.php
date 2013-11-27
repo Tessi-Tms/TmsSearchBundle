@@ -65,7 +65,6 @@ class SearchIndexHandler
         return true;
     }
 
-
     /**
      * @param IndexableElementInterface $element
      * @return boolean
@@ -77,10 +76,11 @@ class SearchIndexHandler
                 ->getIndexer($element)
                 ->delete($element)
             ;
-
         } catch (\Exception $e) {
             return false;
         }
+
+        return true;
     }
 
     /**

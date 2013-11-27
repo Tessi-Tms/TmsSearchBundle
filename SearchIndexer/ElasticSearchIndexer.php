@@ -97,9 +97,13 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
             array('index' => $this->name,
                   'type' => $this->collectionName)
         );
-        $data = $this->client->delete($parameters);
 
-        return $data;
+        $resultSet = $this->client->delete($parameters);
+        if (is_array($resultSet) && isset($resultSet['ok']) && true === $resultSet['ok']) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
