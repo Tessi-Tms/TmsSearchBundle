@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *
+ * @author: Jean-Philippe CHATEAU <jp.chateau@trepia.fr>
+ * @license: GPL
+ *
+ */
+
 namespace Tms\Bundle\SearchBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

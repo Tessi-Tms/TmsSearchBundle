@@ -1,15 +1,7 @@
 services:
-    tms_search.adapted_index:
-        class: Tms\Bundle\SearchBundle\Index\AdaptedIndex
-
     tms_search.elasticsearch:
-        class: Tms\Bundle\SearchBundle\Index\Elasticsearch
+        class: Tms\Bundle\SearchBundle\SearchIndexer\ElasticSearchIndexer
         arguments: [@tms_search.elasticsearch.client]
-        tags:
-            - { name: tms_search.provider }
-
-    tms_search.elastica:
-        class: Tms\Bundle\SearchBundle\Index\Elastica
         tags:
             - { name: tms_search.provider }
 
@@ -17,3 +9,7 @@ services:
         class: Elasticsearch\Client
         tags:
             - { name: tms_search.provider.elasticsearch }
+
+    tms_search.handler:
+        class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler
+        arguments: [ @doctrine ]

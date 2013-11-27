@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *
+ * @author: Jean-Philippe CHATEAU <jp.chateau@trepia.fr>
+ * @license: GPL
+ *
+ */
+
 namespace Tms\Bundle\SearchBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;

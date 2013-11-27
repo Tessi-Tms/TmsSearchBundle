@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *
+ * @author: Jean-Philippe CHATEAU <jp.chateau@trepia.fr>
+ * @license: GPL
+ *
+ */
+
 namespace Tms\Bundle\SearchBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -23,16 +30,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('indexes')
+                    //->cannotBeOverwritten()
                     ->useAttributeAsKey('name')
                     ->prototype('array')
-                        ->useAttributeAsKey('name')
-                        ->prototype('array')
-                            ->children()
-                                ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
-                                ->append($this->addProviderNode())
-                                ->arrayNode('mapping')
-                                    ->prototype('variable')->end()
-                                ->end()
+                        ->children()
+                            ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
+                            ->append($this->addProviderNode())
+                            ->arrayNode('mapping')
+                                ->prototype('variable')->end()
                             ->end()
                         ->end()
                     ->end()

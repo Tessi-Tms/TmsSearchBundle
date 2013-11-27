@@ -13,9 +13,14 @@ class TestController extends Controller
      */
     public function searchAction($query)
     {
-        $adaptedIndexes = $this->container->get('tms_search.adapted_index');
-        $adaptedIndex = $adaptedIndexes->getIndex('tms_participations', 'participation');
-        $data = $adaptedIndex->search($query, false);
+        $searchIndexHandler = $this->container->get('tms_search.handler');
+        $searchIndexHandler->getIndexers();
+        /*
+        $entity = new \Tms\Bundle\ParticipationBundle\Document\Participation();
+        $classMetadata = $this->get('doctrine_mongodb.odm.document_manager')->getClassMetadata(get_class($entity));
+        die(var_dump($classMetadata));
+        */
+        $data = $searchIndexHandler->search($query);
         die(var_dump($data));
     }
 
