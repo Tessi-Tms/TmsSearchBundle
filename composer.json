@@ -17,7 +17,6 @@
         "symfony/config" : ">=2.1,<2.4"
     },
     "suggest": {
-        "friendsofsymfony/elastica-bundle": "3.0.*@dev",
         "elasticsearch/elasticsearch": "~0.4"
     },
     "require-dev": {

@@ -1,9 +1,15 @@
 services:
-    index_factory:
-        class: Tms\Bundle\SearchBundle\Index\IndexFactory
+    tms_search.elasticsearch:
+        class: Tms\Bundle\SearchBundle\SearchIndexer\ElasticSearchIndexer
+        arguments: [@tms_search.elasticsearch.client]
+        tags:
+            - { name: tms_search.provider }
 
-    adapted_index:
-        class: Tms\Bundle\SearchBundle\Index\AbstractIndex
-        factory_service: index_factory
-        factory_method: get
-        arguments: [@service_container]
+    tms_search.elasticsearch.client:
+        class: Elasticsearch\Client
+        tags:
+            - { name: tms_search.provider.elasticsearch }
+
+    tms_search.handler:
+        class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler
+        arguments: [ @doctrine ]

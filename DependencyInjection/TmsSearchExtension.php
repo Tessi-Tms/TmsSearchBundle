@@ -1,5 +1,12 @@
 <?php
 
+/**
+ *
+ * @author: Jean-Philippe CHATEAU <jp.chateau@trepia.fr>
+ * @license: GPL
+ *
+ */
+
 namespace Tms\Bundle\SearchBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,16 +29,10 @@ class TmsSearchExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        /*
-        var_dump($config['indexes']['tms_participation']['participation']);
-        die();
-        */
-
-        $container->setParameter('tms_search.engine', $config['engine']);
-        $container->setParameter('tms_search.index', $config['index']);
-
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $container->setParameter('tms_search.indexes', $config['indexes']);
     }
 
     /**

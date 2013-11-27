@@ -9,13 +9,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class TestController extends Controller
 {
     /**
-     * @Route("/search/{slug}")
+     * @Route("/search/{query}")
      */
-    public function searchAction($slug)
+    public function searchAction($query)
     {
-        $adaptedIndex = $this->container->get('adapted_index');
-
-        $data = $adaptedIndex->search($slug);
+        $searchIndexHandler = $this->container->get('tms_search.handler');
+        $searchIndexHandler->getIndexers();
+        /*
+        $entity = new \Tms\Bundle\ParticipationBundle\Document\Participation();
+        $classMetadata = $this->get('doctrine_mongodb.odm.document_manager')->getClassMetadata(get_class($entity));
+        die(var_dump($classMetadata));
+        */
+        $data = $searchIndexHandler->search($query);
         die(var_dump($data));
     }
 
