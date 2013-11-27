@@ -9,6 +9,8 @@
 
 namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
+use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
+
 interface SearchIndexerInterface
 {
     /**

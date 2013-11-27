@@ -10,6 +10,7 @@
 namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
 use Tms\Bundle\SearchBundle\Exception\UndefinedMappingMethodException;
+use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 
 abstract class AbstractSearchIndexer implements SearchIndexerInterface
 {

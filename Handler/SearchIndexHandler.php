@@ -11,21 +11,21 @@ namespace Tms\Bundle\SearchBundle\handler;
 
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Tms\Bundle\SearchBundle\SearchIndexer\SearchIndexerInterface;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 
 class SearchIndexHandler
 {
     protected $indexers;
-    protected $doctrine;
+    protected $entityManager;
 
     /**
      *
      * @param unknown $indexableElementFactory
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->indexers = array();
-        $this->doctrine = $doctrine;
+        $this->entityManager = $doctrine->getManager();
     }
 
     public function addIndexer($class, $indexer)
@@ -50,7 +50,7 @@ class SearchIndexHandler
      * @param IndexableElementInterface $element
      * @return boolean
      */
-    public function index($element)
+    public function index(IndexableElementInterface $element)
     {
         try {
             $this
@@ -58,8 +58,11 @@ class SearchIndexHandler
                 ->create($element)
             ;
         } catch (\Exception $e) {
+            //echo $e->getMessage();
             return false;
         }
+
+        return true;
     }
 
 
@@ -87,15 +90,18 @@ class SearchIndexHandler
      */
     protected function getIndexer(IndexableElementInterface $element)
     {
+        return $this->indexers['participation'];
+        die(var_dump(get_class($element)));
         $classMetadata = $this->entityManager->getClassMetadata(get_class($element));
+        //die(var_dump($classMetadata->getName()));
         die(var_dump($classMetadata));
         return $this->indexers[$classMetadata['class']];
     }
 
     public function getIndexers()
     {
-        print_r($this->indexers);
+        //print_r($this->indexers);
+        var_dump($this->indexers);
         die();
-        die(var_dump($this->indexers));
     }
 }

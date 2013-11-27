@@ -26,7 +26,7 @@ class ProviderCompilerPass implements CompilerPassInterface
         $handlerDefinition = $container->getDefinition('tms_search.handler');
 
         foreach ($indexes as $name => $index) {
-            $collectionName = str_replace(':', '', $index['class']);
+            $collectionName = strtolower(substr(strstr($index['class'], ':'), 1));
             $clientDefinition = new DefinitionDecorator($index['provider']['name']. '.client');
             $clientDefinition->addArgument(
                 array('hosts' => array($index['provider']['options']['host'] . ':' . $index['provider']['options']['port']))

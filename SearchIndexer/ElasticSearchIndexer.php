@@ -9,7 +9,7 @@
 
 namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
-use Tms\Bundle\SearchBundle\IndexableElement;
+use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 
 final class ElasticSearchIndexer extends AbstractSearchIndexer
 {
@@ -52,15 +52,36 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         return $data;
     }
 
+    /**
+     *
+     * @param IndexableElementInterface $element
+     * @return boolean
+     */
     public function create(IndexableElementInterface $element)
     {
         $parameters = array();
-        $parameters['index'] = $this->index;
-        $parameters['type']  = $this->type;
+        $parameters['index'] = $this->name;
+        $parameters['type']  = $this->collectionName;
         $parameters['id']    = $element->getId();
-        $parameters['body']  = json_decode($element->getIndexedData(), true);
 
-        return $this->client->index($parameters);
+        $body = array();
+        foreach ($element->getIndexedData() as $fieldToIndex) {
+            if (isset($fieldToIndex['options']['type']) && 'json' === $fieldToIndex['options']['type']) {
+                $data = json_decode($fieldToIndex['value'], true);
+                $body = array_merge($body, $data);
+            } else {
+                $body[$fieldToIndex['field']] = $fieldToIndex['value'];
+            }
+        }
+        $parameters['body'] = $body;
+
+        $resultSet = $this->client->index($parameters);
+        //die(var_dump($resultSet));
+        if (is_array($resultSet) && isset($resultSet['ok']) && true === $resultSet['ok']) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
