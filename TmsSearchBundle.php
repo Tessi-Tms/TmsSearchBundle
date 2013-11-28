@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Tms\Bundle\SearchBundle\DependencyInjection\TmsSearchExtension;
-use Tms\Bundle\SearchBundle\DependencyInjection\Compiler\ProviderCompilerPass;
+use Tms\Bundle\SearchBundle\DependencyInjection\Compiler\IndexerCompilerPass;
 
 class TmsSearchBundle extends Bundle
 {
@@ -26,6 +26,6 @@ class TmsSearchBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new ProviderCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+        $container->addCompilerPass(new IndexerCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
     }
 }

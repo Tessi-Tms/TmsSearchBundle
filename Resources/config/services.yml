@@ -1,14 +1,9 @@
 services:
-    tms_search.elasticsearch:
+    tms_search.indexer.elasticsearch:
         class: Tms\Bundle\SearchBundle\SearchIndexer\ElasticSearchIndexer
-        arguments: [@tms_search.elasticsearch.client]
-        tags:
-            - { name: tms_search.provider }
 
-    tms_search.elasticsearch.client:
-        class: Elasticsearch\Client
-        tags:
-            - { name: tms_search.provider.elasticsearch }
+ #   tms_search.indexer.lucenesearch:
+ #       class: Tms\Bundle\SearchBundle\SearchIndexer\LuceneSearchIndexer
 
     tms_search.handler:
         class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler

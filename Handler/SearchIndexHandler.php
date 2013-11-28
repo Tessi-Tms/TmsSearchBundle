@@ -20,7 +20,7 @@ class SearchIndexHandler
 
     /**
      *
-     * @param unknown $indexableElementFactory
+     * @param ManagerRegistry $doctrine
      */
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -28,7 +28,14 @@ class SearchIndexHandler
         $this->entityManager = $doctrine->getManager();
     }
 
-    public function addIndexer($class, $indexer)
+    /**
+     * Add an indexer
+     *
+     * @param string $class
+     * @param SearchIndexerInterface $indexer
+     * @return \Tms\Bundle\SearchBundle\handler\SearchIndexHandler
+     */
+    public function addIndexer($class, SearchIndexerInterface $indexer)
     {
         $this->indexers[$class] = $indexer;
 
@@ -36,8 +43,8 @@ class SearchIndexHandler
     }
 
     /**
-     * @param TmsParticipationBundle:Participation
-     * @param query
+     * @param IndexableElementInterface $element
+     * @param string $query
      * @return array
      *
      */
@@ -68,7 +75,6 @@ class SearchIndexHandler
                 ->create($element)
             ;
         } catch (\Exception $e) {
-            //echo $e->getMessage();
             return false;
         }
 
@@ -100,6 +106,12 @@ class SearchIndexHandler
      */
     protected function getIndexer(IndexableElementInterface $element)
     {
+        /*
+        $class = 'participation';
+        if (isset($this->indexers['participation'])) {
+
+        }
+        */
         return $this->indexers['participation'];
         die(var_dump(get_class($element)));
         $classMetadata = $this->entityManager->getClassMetadata(get_class($element));

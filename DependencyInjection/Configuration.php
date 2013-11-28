@@ -30,15 +30,11 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('indexes')
-                    //->cannotBeOverwritten()
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->children()
                             ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
-                            ->append($this->addProviderNode())
-                            ->arrayNode('mapping')
-                                ->prototype('variable')->end()
-                            ->end()
+                            ->append($this->addIndexerNode())
                         ->end()
                     ->end()
                 ->end()
@@ -48,10 +44,10 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    public function addProviderNode()
+    public function addIndexerNode()
     {
         $builder = new TreeBuilder();
-        $node = $builder->root('provider');
+        $node = $builder->root('indexer');
 
         $node
             ->children()

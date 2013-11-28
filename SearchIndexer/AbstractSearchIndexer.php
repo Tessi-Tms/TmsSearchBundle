@@ -11,11 +11,22 @@ namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
 use Tms\Bundle\SearchBundle\Exception\UndefinedMappingMethodException;
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class AbstractSearchIndexer implements SearchIndexerInterface
 {
     protected $name;
     protected $collectionName;
+    protected $options;
+
+    public function __construct(array $options = array())
+    {
+        $resolver = new OptionsResolver();
+        $this->setDefaultOptions($resolver);
+
+        $this->options = $resolver->resolve($options);
+    }
 
     /**
      *

@@ -10,21 +10,52 @@
 namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 final class ElasticSearchIndexer extends AbstractSearchIndexer
 {
     private $client;
+    protected $options;
 
-    public function __construct(\Elasticsearch\Client $client)
+    /**
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = array())
     {
-        $this->client = $client;
+        parent::__construct($options);
+
+        $this->initializeClient();
     }
 
     /**
      *
-     * @param string $query
-     * @throws \Exception
+     * @param OptionsResolverInterface $resolver
+     */
+    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setRequired(array('host', 'port'))
+        ;
+    }
+
+    /**
+     * Set the indexer client according to the options
+     */
+    protected function initializeClient()
+    {
+        $this->client = new \Elasticsearch\Client(array(
+            'hosts' => array(sprintf('%s:%d',
+                $this->options['host'],
+                $this->options['port']
+            ))
+        ));
+    }
+
+    /**
      *
+     * @param IndexableElementInterface $element
+     * @param string $query
      * @return array $data:
      */
     public function search(IndexableElementInterface $element, $query)
@@ -72,7 +103,6 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $parameters['body'] = $body;
 
         $resultSet = $this->client->index($parameters);
-        //die(var_dump($resultSet));
         if (is_array($resultSet) && isset($resultSet['ok']) && true === $resultSet['ok']) {
             return true;
         }
@@ -83,6 +113,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     /**
      *
      * @param IndexableElementInterface $element
+     * @return boolean
      */
     public function delete(IndexableElementInterface $element)
     {
@@ -127,6 +158,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
             $i++;
         }
         $this->client->bulk(array('body' => $body));
+
         return $i;
     }
 }
