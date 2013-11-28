@@ -27,15 +27,27 @@ class TestController extends Controller
     }
 
     /**
-     * @Route("index/{id}")
+     * @Route("create/{id}")
      */
-    public function testIndexAction($id)
+    public function testCreateAction($id)
     {
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $mongoId = new \MongoId($id);
         $participation = $participationHandler->retrieveParticipation($mongoId);
         $searchHandler = $this->container->get('tms_search.handler');
         die(var_dump($searchHandler->index($participation)));
+    }
+
+    /**
+     * @Route("update/{id}")
+     */
+    public function testUpdateAction($id)
+    {
+        $participationHandler = $this->container->get('tms_participation.handler.participation');
+        $mongoId = new \MongoId($id);
+        $participation = $participationHandler->retrieveParticipation($mongoId);
+        $searchHandler = $this->container->get('tms_search.handler');
+        die(var_dump($searchHandler->update($participation)));
     }
 
     /**
