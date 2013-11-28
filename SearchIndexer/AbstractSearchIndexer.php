@@ -17,7 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 abstract class AbstractSearchIndexer implements SearchIndexerInterface
 {
     protected $name;
-    protected $collectionName;
     protected $options;
 
     public function __construct(array $options = array())
@@ -30,6 +29,17 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
 
     /**
      *
+     * @param OptionsResolverInterface $resolver
+     */
+    protected function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setOptional(array('collection_name'))
+        ;
+    }
+
+    /**
+     *
      * @param string $index
      *
      * @return AbstractSearchIndexer
@@ -37,19 +47,6 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param string $collectionName
-     *
-     * @return AbstractSearchIndexer
-     */
-    public function setCollectionName($collectionName)
-    {
-        $this->collectionName = $collectionName;
 
         return $this;
     }

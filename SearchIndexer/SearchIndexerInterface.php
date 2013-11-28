@@ -18,7 +18,7 @@ interface SearchIndexerInterface
      *
      * @param string $query
      */
-    public function search(IndexableElementInterface $element, $query);
+    public function search($query);
 
     /**
      * Create a search index based on the given element
@@ -26,6 +26,13 @@ interface SearchIndexerInterface
      * @param IndexableElementInterface $element
      */
     public function create(IndexableElementInterface $element);
+
+    /**
+     * Update a search index based on the given element
+     *
+     * @param IndexableElementInterface $element
+     */
+    public function update(IndexableElementInterface $element);
 
     /**
      * Delete a search index based on the given element

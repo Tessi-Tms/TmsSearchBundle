@@ -14,16 +14,15 @@ class TestController extends Controller
     public function searchAction($query)
     {
         $searchIndexHandler = $this->container->get('tms_search.handler');
-        $searchIndexHandler->getIndexers();
+        //$searchIndexHandler->getIndexers();
 
-        $participation = new \Tms\Bundle\ParticipationBundle\Document\Participation();
-        $data = $searchIndexHandler->search($participation, $query);
+        $data = $searchIndexHandler->search('tms_participation', $query);
         die(var_dump($data));
 
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $participations = $participationHandler->retrieveRawParticipations(
                 null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, $slug);
+                null, null, null, null, null, null, $query);
         die(var_dump($participations));
     }
 
@@ -36,7 +35,6 @@ class TestController extends Controller
         $mongoId = new \MongoId($id);
         $participation = $participationHandler->retrieveParticipation($mongoId);
         $searchHandler = $this->container->get('tms_search.handler');
-        var_dump($participation);
         die(var_dump($searchHandler->index($participation)));
     }
 
@@ -49,7 +47,6 @@ class TestController extends Controller
         $mongoId = new \MongoId($id);
         $participation = $participationHandler->retrieveParticipation($mongoId);
         $searchHandler = $this->container->get('tms_search.handler');
-        var_dump($participation);
         die(var_dump($searchHandler->unIndex($participation)));
     }
 }

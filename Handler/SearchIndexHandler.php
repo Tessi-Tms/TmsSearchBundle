@@ -11,56 +11,59 @@ namespace Tms\Bundle\SearchBundle\handler;
 
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Tms\Bundle\SearchBundle\SearchIndexer\SearchIndexerInterface;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Tms\Bundle\SearchBundle\Exception\UndefinedIndexerException;
 
 class SearchIndexHandler
 {
-    protected $indexers;
-    protected $entityManager;
+    private $indexers;
+    private $classes;
 
     /**
      *
      * @param ManagerRegistry $doctrine
      */
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct()
     {
         $this->indexers = array();
-        $this->entityManager = $doctrine->getManager();
+        $this->classes = array();
+
     }
 
     /**
      * Add an indexer
      *
-     * @param string $class
+     * @param string $indexName
+     * @param string $className
      * @param SearchIndexerInterface $indexer
      * @return \Tms\Bundle\SearchBundle\handler\SearchIndexHandler
      */
-    public function addIndexer($class, SearchIndexerInterface $indexer)
+    public function addIndexer($indexName, $className, SearchIndexerInterface $indexer)
     {
-        $this->indexers[$class] = $indexer;
+        $this->classes[$className] = $indexName;
+        $this->indexers[$indexName] = $indexer;
 
         return $this;
     }
 
     /**
-     * @param IndexableElementInterface $element
+     * @param string $indexName
      * @param string $query
      * @return array
      *
      */
-    public function search(IndexableElementInterface $element, $query)
+    public function search($indexName, $query)
     {
         $data = array();
         try {
             $data = $this
-                ->getIndexer($element)
-                ->search($element, $query)
+                ->getIndexerByIndexName($indexName)
+                ->search($query)
             ;
         } catch (\Exception $e) {
-            return false;
+            return $data;
         }
 
-        return data;
+        return $data;
     }
 
     /**
@@ -104,26 +107,38 @@ class SearchIndexHandler
      * @param IndexableElementInterface $element
      * @return SearchIndexerInterface
      */
-    protected function getIndexer(IndexableElementInterface $element)
+    private function getIndexer(IndexableElementInterface $element)
     {
-        /*
-        $class = 'participation';
-        if (isset($this->indexers['participation'])) {
-
-        }
-        */
-        return $this->indexers['participation'];
-        die(var_dump(get_class($element)));
-        $classMetadata = $this->entityManager->getClassMetadata(get_class($element));
-        //die(var_dump($classMetadata->getName()));
-        die(var_dump($classMetadata));
-        return $this->indexers[$classMetadata['class']];
+        return $this->getIndexerByClassName(get_class($element));
     }
 
-    public function getIndexers()
+    /**
+     *
+     * @param string $className
+     * @throws UndefinedIndexerException
+     * @return SearchIndexerInterface
+     */
+    private function getIndexerByClassName($className)
     {
-        //print_r($this->indexers);
-        var_dump($this->indexers);
-        die();
+        if (!isset($this->classes[$className])) {
+            throw new UndefinedIndexerException($className);
+        }
+
+        return $this->getIndexerByIndexName($this->classes[$className]);
+    }
+
+    /**
+     *
+     * @param string $indexName
+     * @throws UndefinedIndexerException
+     * @return SearchIndexerInterface
+     */
+    private function getIndexerByIndexName($indexName)
+    {
+        if (!isset($this->indexers[$indexName])) {
+            throw new UndefinedIndexerException($indexName);
+        }
+
+        return $this->indexers[$indexName];
     }
 }

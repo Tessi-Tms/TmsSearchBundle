@@ -15,7 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 final class ElasticSearchIndexer extends AbstractSearchIndexer
 {
     private $client;
-    protected $options;
 
     /**
      *
@@ -34,6 +33,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
      */
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        parent::setDefaultOptions($resolver);
         $resolver
             ->setRequired(array('host', 'port'))
         ;
@@ -54,26 +54,29 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
 
     /**
      *
-     * @param IndexableElementInterface $element
      * @param string $query
      * @return array $data:
      */
-    public function search(IndexableElementInterface $element, $query)
+    public function search($query)
     {
         $parameters = array();
         $parameters['body']['query']['query_string']['query'] = $query;
         $parameters = array_merge(
             $parameters,
             array('index' => $this->name,
-                  'type' => $this->collectionName)
+                  'type' => $this->name)
         );
 
         $resultSet = $this->client->search($parameters);
 
         $data = array();
         if (isset($resultSet['hits']) && isset($resultSet['hits']['hits'])) {
-            $data = $resultSet['hits']['hits'];
-            die(var_dump($data));
+            foreach ($resultSet['hits']['hits'] as $hit) {
+                $result = array();
+                $result['id'] = $hit['_id'];
+                $result = array_merge($result, $hit['_source']);
+                array_push($data, $result);
+            }
         }
 
         return $data;
@@ -88,16 +91,19 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     {
         $parameters = array();
         $parameters['index'] = $this->name;
-        $parameters['type']  = $this->collectionName;
+        $parameters['type']  = $this->name;
         $parameters['id']    = $element->getId();
 
         $body = array();
         foreach ($element->getIndexedData() as $fieldToIndex) {
-            if (isset($fieldToIndex['options']['type']) && 'json' === $fieldToIndex['options']['type']) {
+            if (isset($fieldToIndex['options']) &&
+                isset($fieldToIndex['options']['type']) &&
+                'json' === $fieldToIndex['options']['type']
+            ) {
                 $data = json_decode($fieldToIndex['value'], true);
                 $body = array_merge($body, $data);
             } else {
-                $body[$fieldToIndex['field']] = $fieldToIndex['value'];
+                $body[$fieldToIndex['key']] = $fieldToIndex['value'];
             }
         }
         $parameters['body'] = $body;
@@ -115,6 +121,16 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
      * @param IndexableElementInterface $element
      * @return boolean
      */
+    public function update(IndexableElementInterface $element)
+    {
+        return $this->create($element);
+    }
+
+    /**
+     *
+     * @param IndexableElementInterface $element
+     * @return boolean
+     */
     public function delete(IndexableElementInterface $element)
     {
         $parameters = array();
@@ -122,7 +138,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $parameters = array_merge(
             $parameters,
             array('index' => $this->name,
-                  'type' => $this->collectionName)
+                  'type' => $this->name)
         );
 
         $resultSet = $this->client->delete($parameters);

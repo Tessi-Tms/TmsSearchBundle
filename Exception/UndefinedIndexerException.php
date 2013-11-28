@@ -7,6 +7,8 @@
  *
  */
 
+namespace Tms\Bundle\SearchBundle\Exception;
+
 class UndefinedIndexerException extends \Exception
 {
     public function __contruct($class)

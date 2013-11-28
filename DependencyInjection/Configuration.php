@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
 
         $node
             ->children()
-                ->scalarNode('name')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('service_name')->isRequired()->cannotBeEmpty()->end()
                 ->arrayNode('options')
                     ->prototype('variable')->end()
                 ->end()
