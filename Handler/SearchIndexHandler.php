@@ -80,6 +80,24 @@ class SearchIndexHandler
     }
 
     /**
+     * @param IndexableElementInterface $element
+     * @return boolean
+     */
+    public function unIndex(IndexableElementInterface $element)
+    {
+        try {
+            $this
+            ->getIndexer($element)
+            ->delete($element)
+            ;
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      *
      * @param IndexableElementInterface $element
      * @return SearchIndexerInterface

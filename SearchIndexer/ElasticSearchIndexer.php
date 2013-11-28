@@ -64,7 +64,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $parameters = array_merge(
             $parameters,
             array('index' => $this->name,
-                  'type' => $this->name)
+                  'type' => (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name))
         );
 
         $resultSet = $this->client->search($parameters);
@@ -91,7 +91,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     {
         $parameters = array();
         $parameters['index'] = $this->name;
-        $parameters['type']  = $this->name;
+        $parameters['type']  = (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name);
         $parameters['id']    = $element->getId();
 
         $body = array();
@@ -128,7 +128,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $parameters = array_merge(
             $parameters,
             array('index' => $this->name,
-                  'type' => $this->name)
+                  'type' => (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name))
         );
 
         $resultSet = $this->client->delete($parameters);
@@ -146,6 +146,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
      *
      * @return integer $i
      */
+    /*
     public function bulk(\Doctrine\MongoDB\Cursor $documents, array $fields)
     {
         $body = "";
@@ -167,4 +168,5 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
 
         return $i;
     }
+    */
 }
