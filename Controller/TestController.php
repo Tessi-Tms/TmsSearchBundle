@@ -14,8 +14,6 @@ class TestController extends Controller
     public function searchAction($query)
     {
         $searchIndexHandler = $this->container->get('tms_search.handler');
-        //$searchIndexHandler->getIndexers();
-
         $data = $searchIndexHandler->search('tms_participation', $query);
         die(var_dump($data));
 
@@ -29,7 +27,7 @@ class TestController extends Controller
     /**
      * @Route("create/{id}")
      */
-    public function testCreateAction($id)
+    public function createAction($id)
     {
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $mongoId = new \MongoId($id);
@@ -41,19 +39,19 @@ class TestController extends Controller
     /**
      * @Route("update/{id}")
      */
-    public function testUpdateAction($id)
+    public function updateAction($id)
     {
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $mongoId = new \MongoId($id);
         $participation = $participationHandler->retrieveParticipation($mongoId);
         $searchHandler = $this->container->get('tms_search.handler');
-        die(var_dump($searchHandler->update($participation)));
+        die(var_dump($searchHandler->index($participation)));
     }
 
     /**
      * @Route("delete/{id}")
      */
-    public function testDeleteAction($id)
+    public function deleteAction($id)
     {
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $mongoId = new \MongoId($id);

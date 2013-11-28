@@ -28,13 +28,6 @@ interface SearchIndexerInterface
     public function create(IndexableElementInterface $element);
 
     /**
-     * Update a search index based on the given element
-     *
-     * @param IndexableElementInterface $element
-     */
-    public function update(IndexableElementInterface $element);
-
-    /**
      * Delete a search index based on the given element
      *
      * @param IndexableElementInterface $element

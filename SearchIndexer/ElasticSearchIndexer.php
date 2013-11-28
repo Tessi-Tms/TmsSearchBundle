@@ -121,16 +121,6 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
      * @param IndexableElementInterface $element
      * @return boolean
      */
-    public function update(IndexableElementInterface $element)
-    {
-        return $this->create($element);
-    }
-
-    /**
-     *
-     * @param IndexableElementInterface $element
-     * @return boolean
-     */
     public function delete(IndexableElementInterface $element)
     {
         $parameters = array();
