@@ -78,7 +78,6 @@ class SearchIndexHandler
      * @param Object $manager
      * @param string $indexName
      * @param string $query
-     * @throws UndefinedRepositoryException
      * @return array $data;
      */
     private function searchAndFetch($manager, $indexName, $query)
@@ -166,7 +165,6 @@ class SearchIndexHandler
     /**
      *
      * @param IndexableElementInterface $element
-     * @return SearchIndexerInterface
      */
     private function getIndexer(IndexableElementInterface $element)
     {
@@ -177,7 +175,6 @@ class SearchIndexHandler
      *
      * @param string $className
      * @throws UndefinedIndexerException
-     * @return SearchIndexerInterface
      */
     private function getIndexerByClassName($className)
     {
@@ -207,7 +204,6 @@ class SearchIndexHandler
      *
      * @param Object $manager
      * @param string $indexName
-     * @return Object
      */
     private function getRepository($manager, $indexName)
     {

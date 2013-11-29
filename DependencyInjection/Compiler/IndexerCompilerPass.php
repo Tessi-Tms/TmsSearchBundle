@@ -31,8 +31,10 @@ class IndexerCompilerPass implements CompilerPassInterface
                 return;
             }
             $indexerDefinition = new DefinitionDecorator($serviceName);
-            $indexerDefinition->addArgument($index['indexer']['options']);
-            $indexerDefinition->addMethodCall('setName', array($name));
+            $indexerDefinition
+                ->addArgument($index['indexer']['options'])
+                ->addMethodCall('setName', array($name))
+            ;
 
             $indexerServiceName = sprintf('%s.%s', $serviceName, $name);
             $container->setDefinition($indexerServiceName, $indexerDefinition);
@@ -51,6 +53,9 @@ class IndexerCompilerPass implements CompilerPassInterface
         if ($container->hasDefinition('doctrine_mongodb')) {
             $doctrineMongoDB = new Reference('doctrine_mongodb');
         }
-        $handlerDefinition->addArgument($doctrine)->addArgument($doctrineMongoDB);
+        $handlerDefinition
+            ->addArgument($doctrine)
+            ->addArgument($doctrineMongoDB)
+        ;
     }
 }

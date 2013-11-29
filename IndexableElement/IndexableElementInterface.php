@@ -19,7 +19,7 @@ interface IndexableElementInterface
     public function getId();
 
     /**
-     * Get the mapping of an indexable element
+     * Get the data to index of an indexable element
      *
      * @return array
      */

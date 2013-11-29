@@ -14,6 +14,7 @@ class TestController extends Controller
     public function searchAction($query)
     {
         $searchIndexHandler = $this->container->get('tms_search.handler');
+        //$documentManager = $this->container->get('doctrine_mongodb.odm.custom_document_manager');
         $data = $searchIndexHandler->searchAndFetchDocument('tms_participation', $query);
         die(var_dump($data));
 

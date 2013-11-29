@@ -68,7 +68,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         );
 
         $resultSet = $this->client->search($parameters);
-
+        //die(var_dump($resultSet));
         $data = array();
         if (isset($resultSet['hits']) && isset($resultSet['hits']['hits'])) {
             foreach ($resultSet['hits']['hits'] as $hit) {

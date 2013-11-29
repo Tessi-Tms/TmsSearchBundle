@@ -44,6 +44,9 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
+    /**
+     * Add an indexer config node
+     */
     public function addIndexerNode()
     {
         $builder = new TreeBuilder();
