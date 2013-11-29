@@ -13,8 +13,8 @@ use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Tms\Bundle\SearchBundle\SearchIndexer\SearchIndexerInterface;
 use Tms\Bundle\SearchBundle\Exception\UndefinedIndexerException;
 use Tms\Bundle\SearchBundle\Exception\UndefinedRepositoryException;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 
 class SearchIndexHandler
 {
@@ -81,7 +81,7 @@ class SearchIndexHandler
      * @throws UndefinedRepositoryException
      * @return array $data;
      */
-    public function searchAndFetch($manager, $indexName, $query)
+    private function searchAndFetch($manager, $indexName, $query)
     {
         $data = array();
         $results = $this->search($indexName, $query);
