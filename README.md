@@ -86,8 +86,8 @@ parameters:
 
 Your model must implement the IndexableElement Interface.
 You must define a key and a value for each field you want to index.
-If the field is a stringified json object, you have to indicate it.
-Then, each field of this json object will be indexed.
+If the field is a stringified json object, you have to declare it in options.
+Then, each field of the json object will be indexed.
 
 
 ``` php
@@ -134,12 +134,19 @@ $indexName = 'tms_participation';                                   // After the
 $searchIndexHandler = $this->container->get('tms_search.handler');  // Get the search service
 $data = $searchIndexHandler->search($indexName, $query);            // Returns elements in array
 ```
-This search operations will return an array of elements. 
-If you want to fetch the object directly from the search operation:
+These search operations will return an array of elements. 
+If you want to fetch the object directly from a search operation:
 ``` php
 $data = $searchIndexHandler->searchAndFetchEntity($indexName, $query);   // ORM
 $data = $searchIndexHandler->searchAndFetchDocument($indexName, $query); // ODM
 ```
+Optional: You can specify a custom Document Manager when you call these functions.
+Example with a Doctrine MongoDB document manager from a connection named 'custom':
+``` php
+$documentManager = $this->container->get('doctrine_mongodb.odm.custom_document_manager');
+$data = $searchIndexHandler->searchAndFetchDocument($indexName, $query, $documentManager);
+```
+
 
 #### Indexing operations
 
@@ -164,7 +171,13 @@ You can find it here: http://www.elasticsearch.org/download/
 bin/elasticsearch -f
 ```
 
-Moreover, you can use a web client to browse your indexed data or get statistics from your elastic search cluster.
+Now, you can use a web client to browse your indexed data or get statistics from your elastic search cluster.
 See Elasticsearch HEAD plugin or Elastic Search HQ.
+
+Links:
+
+http://mobz.github.io/elasticsearch-head/
+
+http://www.elastichq.org/
 
 
