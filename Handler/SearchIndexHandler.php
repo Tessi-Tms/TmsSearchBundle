@@ -101,20 +101,30 @@ class SearchIndexHandler
      *
      * @param string $indexName
      * @param string $query
+     * @param Object $documentManager
      */
-    public function searchAndFetchDocument($indexName, $query)
+    public function searchAndFetchDocument($indexName, $query, $documentManager = null)
     {
-        return $this->searchAndFetch($this->doctrineMongoDB->getManager(), $indexName, $query);
+        if (!$documentManager) {
+            $documentManager = $this->doctrineMongoDB->getManager();
+        }
+
+        return $this->searchAndFetch($documentManager, $indexName, $query);
     }
 
     /**
      *
      * @param string $indexName
      * @param string $query
+     * @param Object $entityManager
      */
-    public function searchAndFetchEntity($indexName, $query)
+    public function searchAndFetchEntity($indexName, $query, $entityManager = null)
     {
-        return $this->searchAndFetch($this->doctrine->getEntityManager(), $indexName, $query);
+        if (!$entityManager) {
+            $entityManager = $this->doctrine->getEntityManager();
+        }
+
+        return $this->searchAndFetch($entityManager, $indexName, $query);
     }
 
     /**
