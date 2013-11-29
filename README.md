@@ -161,7 +161,7 @@ You can find it here: http://www.elasticsearch.org/download/
 2. Launch a node (an instance of elastic search):
 
 ``` sh
-.bin/elasticsearch -f
+bin/elasticsearch -f
 ```
 
 Moreover, you can use a web client to browse your indexed data or get statistics from your elastic search cluster.
