@@ -8,3 +8,4 @@ services:
 
     tms_search.handler:
         class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler
+        arguments: []

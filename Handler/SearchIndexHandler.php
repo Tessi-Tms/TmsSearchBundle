@@ -12,16 +12,28 @@ namespace Tms\Bundle\SearchBundle\handler;
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Tms\Bundle\SearchBundle\SearchIndexer\SearchIndexerInterface;
 use Tms\Bundle\SearchBundle\Exception\UndefinedIndexerException;
+use Tms\Bundle\SearchBundle\Exception\UndefinedRepositoryException;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class SearchIndexHandler
 {
     private $indexers;
     private $classes;
+    private $doctrine;
+    private $doctrineMongoDB;
 
-    public function __construct()
+    /**
+     *
+     * @param Registry $doctrine
+     * @param ManagerRegistry $doctrineMongoDB
+     */
+    public function __construct(Registry $doctrine = null, ManagerRegistry $doctrineMongoDB = null)
     {
         $this->indexers = array();
         $this->classes = array();
+        $this->doctrine = $doctrine;
+        $this->doctrineMongoDB = $doctrineMongoDB;
     }
 
     /**
@@ -43,7 +55,7 @@ class SearchIndexHandler
     /**
      * @param string $indexName
      * @param string $query
-     * @return array
+     * @return array $data
      *
      */
     public function search($indexName, $query)
@@ -59,6 +71,50 @@ class SearchIndexHandler
         }
 
         return $data;
+    }
+
+    /**
+     *
+     * @param Object $manager
+     * @param string $indexName
+     * @param string $query
+     * @throws UndefinedRepositoryException
+     * @return array $data;
+     */
+    public function searchAndFetch($manager, $indexName, $query)
+    {
+        $data = array();
+        $results = $this->search($indexName, $query);
+
+        if (!count($results)) {
+            return $data;
+        }
+
+        $repository = $this->getRepository($manager, $indexName);
+        foreach ($results as $result) {
+            array_push($data, $repository->findOneById($result['id']));
+        }
+        return $data;
+    }
+
+    /**
+     *
+     * @param string $indexName
+     * @param string $query
+     */
+    public function searchAndFetchDocument($indexName, $query)
+    {
+        return $this->searchAndFetch($this->doctrineMongoDB->getManager(), $indexName, $query);
+    }
+
+    /**
+     *
+     * @param string $indexName
+     * @param string $query
+     */
+    public function searchAndFetchEntity($indexName, $query)
+    {
+        return $this->searchAndFetch($this->doctrine->getEntityManager(), $indexName, $query);
     }
 
     /**
@@ -135,5 +191,30 @@ class SearchIndexHandler
         }
 
         return $this->indexers[$indexName];
+    }
+
+    /**
+     *
+     * @param Object $manager
+     * @param string $indexName
+     * @return Object
+     */
+    private function getRepository($manager, $indexName)
+    {
+        if (!$manager) {
+            return null;
+        }
+
+        $className = array_search($indexName, $this->classes);
+        if (false === $className) {
+            return null;
+        }
+
+        $repository = $manager->getRepository($className);
+        if (!$repository) {
+            throw new UndefinedRepositoryException($className);
+        }
+
+        return $repository;
     }
 }

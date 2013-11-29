@@ -14,7 +14,7 @@ class TestController extends Controller
     public function searchAction($query)
     {
         $searchIndexHandler = $this->container->get('tms_search.handler');
-        $data = $searchIndexHandler->search('tms_participation', $query);
+        $data = $searchIndexHandler->searchAndFetchDocument('tms_participation', $query);
         die(var_dump($data));
 
         $participationHandler = $this->container->get('tms_participation.handler.participation');

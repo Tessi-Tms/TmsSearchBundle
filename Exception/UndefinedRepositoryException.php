@@ -9,10 +9,10 @@
 
 namespace Tms\Bundle\SearchBundle\Exception;
 
-class UndefinedIndexerException extends \Exception
+class UndefinedRepositoryException extends \Exception
 {
     public function __contruct($className)
     {
-        return sprintf('The %s class does not have an indexer', $className);
+        return sprintf('The repository of %s class cannot be found', $className);
     }
 }

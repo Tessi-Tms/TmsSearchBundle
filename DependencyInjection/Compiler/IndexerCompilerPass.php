@@ -42,5 +42,15 @@ class IndexerCompilerPass implements CompilerPassInterface
                 array($name, $index['class'], new Reference($indexerServiceName))
             );
         }
+
+        $doctrine = null;
+        $doctrineMongoDB = null;
+        if ($container->hasDefinition('doctrine')) {
+            $doctrine = new Reference('doctrine');
+        }
+        if ($container->hasDefinition('doctrine_mongodb')) {
+            $doctrineMongoDB = new Reference('doctrine_mongodb');
+        }
+        $handlerDefinition->addArgument($doctrine)->addArgument($doctrineMongoDB);
     }
 }
