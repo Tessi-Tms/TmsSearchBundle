@@ -58,14 +58,22 @@ class SearchIndexHandler
      * @return array $data
      *
      */
-    public function search($indexName, $query)
+    public function search($indexName, $query, $page = 1)
     {
+        $limit = $this->getIndexerByIndexName($indexName)->getQueryLimit();
+        $offset = null;
+        if (!empty($page) && is_numeric($page) && $page >= 1) {
+            $offset = $page * $limit - $limit;
+        }
+
         $data = array();
         try {
             $data = $this
                 ->getIndexerByIndexName($indexName)
-                ->search($query)
+                ->search($query, $offset, $limit)
             ;
+            $data['page'] = $page;
+            $data['hasNext'] = ($data['total'] > $page * $limit ? true : false);
         } catch (\Exception $e) {
             return $data;
         }
@@ -80,19 +88,20 @@ class SearchIndexHandler
      * @param string $query
      * @return array $data;
      */
-    private function searchAndFetch($manager, $indexName, $query)
+    private function searchAndFetch($manager, $indexName, $query, $page)
     {
-        $data = array();
-        $results = $this->search($indexName, $query);
-
-        if (!count($results)) {
+        $data = $this->search($indexName, $query, $page);
+        if (0 === $data['count']) {
             return $data;
         }
 
         $repository = $this->getRepository($manager, $indexName);
-        foreach ($results as $result) {
-            array_push($data, $repository->findOneById($result['id']));
+        $results = array();
+        foreach ($data['data'] as $result) {
+            array_push($results, $repository->findOneById($result['id']));
         }
+        $data['data'] = $results;
+
         return $data;
     }
 
@@ -102,13 +111,13 @@ class SearchIndexHandler
      * @param string $query
      * @param Object $documentManager
      */
-    public function searchAndFetchDocument($indexName, $query, $documentManager = null)
+    public function searchAndFetchDocument($indexName, $query, $page = 1, $documentManager = null)
     {
         if (!$documentManager) {
             $documentManager = $this->doctrineMongoDB->getManager();
         }
 
-        return $this->searchAndFetch($documentManager, $indexName, $query);
+        return $this->searchAndFetch($documentManager, $indexName, $query, $page);
     }
 
     /**
@@ -123,7 +132,7 @@ class SearchIndexHandler
             $entityManager = $this->doctrine->getEntityManager();
         }
 
-        return $this->searchAndFetch($entityManager, $indexName, $query);
+        return $this->searchAndFetch($entityManager, $indexName, $query, $page);
     }
 
     /**

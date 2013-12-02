@@ -37,6 +37,12 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $resolver
             ->setRequired(array('host', 'port'))
         ;
+
+        $resolver
+            ->setDefaults(array(
+                'query_limit' => 10,
+            ))
+        ;
     }
 
     /**
@@ -55,11 +61,19 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     /**
      *
      * @param string $query
-     * @return array $data:
+     * @param integer $offset
+     * @param integer $limit
+     * @return array $data
      */
-    public function search($query)
+    public function search($query, $offset = null, $limit = null)
     {
         $parameters = array();
+        if (!empty($offset) && is_numeric($offset)) {
+            $parameters['body']['from'] = $offset;
+        }
+        if (!empty($limit) && is_numeric($limit)) {
+            $parameters['body']['size'] = $limit;
+        }
         $parameters['body']['query']['query_string']['query'] = $query;
         $parameters = array_merge(
             $parameters,
@@ -67,15 +81,27 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
                   'type' => (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name))
         );
 
-        $resultSet = $this->client->search($parameters);
-        //die(var_dump($resultSet));
         $data = array();
-        if (isset($resultSet['hits']) && isset($resultSet['hits']['hits'])) {
-            foreach ($resultSet['hits']['hits'] as $hit) {
-                $result = array();
-                $result['id'] = $hit['_id'];
-                $result = array_merge($result, $hit['_source']);
-                array_push($data, $result);
+        $resultSet = $this->client->search($parameters);
+
+        if (!isset($resultSet['hits'])) {
+            return $data;
+        }
+        $hits = $resultSet['hits'];
+
+        if (isset($hits['total'])) {
+            $data['total'] = $hits['total'];
+        }
+        if (isset($hits['hits'])) {
+            $data['count'] = count($hits['hits']);
+            if ($data['count'] > 0) {
+                $data['data'] = array();
+                foreach ($hits['hits'] as $hit) {
+                    $result = array();
+                    $result['id'] = $hit['_id'];
+                    $result = array_merge($result, $hit['_source']);
+                    array_push($data['data'], $result);
+                }
             }
         }
 

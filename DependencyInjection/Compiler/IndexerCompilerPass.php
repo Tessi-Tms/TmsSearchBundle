@@ -18,8 +18,8 @@ class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $indexes = $container->getParameter('tms_search.indexes');
-
+        $configuration = $container->getParameter('tms_search');
+        $indexes = $configuration['indexes'];
         if (!$container->hasDefinition('tms_search.handler')) {
             return;
         }

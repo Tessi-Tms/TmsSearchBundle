@@ -32,7 +32,7 @@ class TmsSearchExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->setParameter('tms_search.indexes', $config['indexes']);
+        $container->setParameter('tms_search', $config);
     }
 
     /**

@@ -17,8 +17,10 @@ interface SearchIndexerInterface
      * Search indexed element following to given query
      *
      * @param string $query
+     * @param integer $offset
+     * @param integer $limit
      */
-    public function search($query);
+    public function search($query, $offset = null, $limit = null);
 
     /**
      * Create a search index based on the given element

@@ -37,7 +37,7 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
     protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setOptional(array('collection_name'))
+            ->setOptional(array('collection_name', 'query_limit'))
         ;
     }
 
@@ -52,5 +52,13 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getQueryLimit()
+    {
+        return $this->options['query_limit'];
     }
 }
