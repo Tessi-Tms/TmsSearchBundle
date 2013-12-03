@@ -17,17 +17,20 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
 {
     protected $name;
     protected $options;
+    protected $defaultQueryLimit;
 
     /**
      *
      * @param array $options
+     * @param integer $defaultQueryLimit
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), $defaultQueryLimit)
     {
         $resolver = new OptionsResolver();
         $this->setDefaultOptions($resolver);
 
         $this->options = $resolver->resolve($options);
+        $this->defaultQueryLimit = $defaultQueryLimit;
     }
 
     /**

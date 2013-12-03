@@ -16,7 +16,7 @@ class TestController extends Controller
         $searchIndexHandler = $this->container->get('tms_search.handler');
         //$documentManager = $this->container->get('doctrine_mongodb.odm.custom_document_manager');
 
-        $data = $searchIndexHandler->search('tms_participation', $query, 2);
+        $data = $searchIndexHandler->search('tms_participation', $query);
         die(var_dump($data));
 
         $i = 1;
@@ -30,6 +30,8 @@ class TestController extends Controller
             var_dump($data);
         }
         die('end');
+
+
 
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $participations = $participationHandler->retrieveRawParticipations(

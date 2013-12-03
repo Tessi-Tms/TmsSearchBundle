@@ -17,12 +17,11 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     private $client;
 
     /**
-     *
-     * @param array $options
+     * {@inheritDoc}
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), $defaultQueryLimit)
     {
-        parent::__construct($options);
+        parent::__construct($options, $defaultQueryLimit);
 
         $this->initializeClient();
     }
@@ -40,7 +39,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
 
         $resolver
             ->setDefaults(array(
-                'query_limit' => 10,
+                'query_limit' => $this->defaultQueryLimit,
             ))
         ;
     }

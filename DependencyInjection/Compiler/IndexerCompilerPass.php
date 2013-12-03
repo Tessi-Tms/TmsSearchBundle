@@ -18,6 +18,7 @@ class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
+        //die(var_dump($container->getParameter('tms_search_default_query_limit')));
         $configuration = $container->getParameter('tms_search');
         $indexes = $configuration['indexes'];
         if (!$container->hasDefinition('tms_search.handler')) {
@@ -33,6 +34,7 @@ class IndexerCompilerPass implements CompilerPassInterface
             $indexerDefinition = new DefinitionDecorator($serviceName);
             $indexerDefinition
                 ->addArgument($index['indexer']['options'])
+                ->addArgument($container->getParameter('tms_search_default_query_limit'))
                 ->addMethodCall('setName', array($name))
             ;
 
