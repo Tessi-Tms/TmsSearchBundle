@@ -69,6 +69,7 @@ tms_search:
                     host: %tms_search_host%                                 # Indexer host (required)
                     port: %tms_search_port%                                 # Indexer port (required)
                     collection_name: participation                          # Indexer collection name (optionnal)
+                    query_limit: 20                                         # Indexer query limit
 
 ```
 
@@ -86,7 +87,7 @@ parameters:
 
 Your model must implement the IndexableElement Interface.
 You must define a key and a value for each field you want to index.
-If the field is a stringified json object, you have to declare it in options.
+If the field is a stringified json object, you have to declare it in the options.
 Then, each field of the json object will be indexed.
 
 
@@ -147,7 +148,6 @@ $documentManager = $this->container->get('doctrine_mongodb.odm.custom_document_m
 $data = $searchIndexHandler->searchAndFetchDocument($indexName, $query, $documentManager);
 ```
 
-
 #### Indexing operations
 
 ``` php
@@ -155,6 +155,30 @@ $data = $searchIndexHandler->searchAndFetchDocument($indexName, $query, $documen
 $searchIndexHandler->index($participation); // Create or Update an index. Returns boolean
 $searchIndexHandler->unIndex($participation); // Delete an index. Returns boolean
 ```
+
+#### Pagination
+
+When the `search` function is called, the response looks like this:
+
+```
+array (size=5)
+  'total'   => int
+  'count'   => int
+  'data'    => array()
+  'page'    => int
+  'hasNext' => boolean
+```
+
+If hasNext is true, you may want to get the data from the next page (by default, the search is made on the first page):
+
+``` php
+$page = 2;
+$data = $searchIndexHandler->search($indexName, $query, $page);
+```
+
+The max size of the elements returned by the function is 10 by default.
+This value can be overwritten with the query_limit option of the indexer.
+
 
 
 Elastic Search
