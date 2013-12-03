@@ -118,6 +118,7 @@ class SearchIndexHandler
             $documentManager = $this->doctrineMongoDB->getManager();
         }
 
+
         return $this->searchAndFetch($documentManager, $indexName, $query, $page);
     }
 
@@ -232,5 +233,64 @@ class SearchIndexHandler
         }
 
         return $repository;
+    }
+
+    /**
+     *
+     * @param string $indexName
+     * @param Object $documentManager
+     */
+    public function batchIndexDocuments($indexName, $output, $documentManager = null)
+    {
+        if (!$documentManager) {
+            $documentManager = $this->doctrineMongoDB->getManager();
+        }
+
+        return $this->batchIndex($documentManager, $indexName, $output);
+    }
+
+    /**
+     *
+     * @param string $indexName
+     * @param Object $entityManager
+     */
+    public function batchIndexEntities($indexName, $output, $entityManager = null)
+    {
+        if (!$entityManager) {
+            $entityManager = $this->doctrine->getEntityManager();
+        }
+
+        return $this->batchIndex($entityManager, $indexName, $output);
+    }
+
+    /**
+     *
+     * @param Object $manager
+     * @param string $indexName
+     * @param Object $output
+     * @return integer $indexedElements
+     */
+    public function batchIndex($manager, $indexName, $output)
+    {
+        $manager->getConnection()->getConfiguration()->setLoggerCallable(null);
+        $repository = $this->getRepository($manager, $indexName);
+        $elements = $repository->findAll();
+        $i = 0;
+        $indexedElements = 0;
+        foreach ($elements as $element) {
+            $i++;
+            $isIndexed = $this->index($element);
+            if (true === $isIndexed) {
+                $indexedElements++;
+            }
+            $manager->detach($element);
+
+            if ($output) {
+                $message = $i . ' - Current: ' . round(memory_get_usage() / 1024 / 1024, 2) . ' Mb';
+                $output->writeln($message);
+            }
+        }
+
+        return $indexedElements;
     }
 }
