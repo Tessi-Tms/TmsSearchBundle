@@ -245,6 +245,7 @@ class SearchIndexHandler
         if (!$documentManager) {
             $documentManager = $this->doctrineMongoDB->getManager();
         }
+        $documentManager->getConnection()->getConfiguration()->setLoggerCallable(null);
 
         return $this->batchIndex($documentManager, $indexName, $output);
     }
@@ -272,7 +273,6 @@ class SearchIndexHandler
      */
     public function batchIndex($manager, $indexName, $output)
     {
-        $manager->getConnection()->getConfiguration()->setLoggerCallable(null);
         $repository = $this->getRepository($manager, $indexName);
         $elements = $repository->findAll();
         $i = 0;
