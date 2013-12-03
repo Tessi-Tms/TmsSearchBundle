@@ -84,7 +84,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $resultSet = $this->client->search($parameters);
 
         if (isset($resultSet['status']) && 400 === $resultSet['status']) {
-            throw new \Exception('Invalid query');
+            throw new \Exception('Unexpected error');
         }
 
         if (!isset($resultSet['hits'])) {
@@ -138,6 +138,10 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $parameters['body'] = $body;
 
         $resultSet = $this->client->index($parameters);
+        if (isset($resultSet['status']) && 400 === $resultSet['status']) {
+            throw new \Exception('Unexpected error');
+        }
+
         if (is_array($resultSet) && isset($resultSet['ok']) && true === $resultSet['ok']) {
             return true;
         }
@@ -161,6 +165,10 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         );
 
         $resultSet = $this->client->delete($parameters);
+        if (isset($resultSet['status']) && 400 === $resultSet['status']) {
+            throw new \Exception('Unexpected error');
+        }
+
         if (is_array($resultSet) && isset($resultSet['ok']) && true === $resultSet['ok']) {
             return true;
         }
