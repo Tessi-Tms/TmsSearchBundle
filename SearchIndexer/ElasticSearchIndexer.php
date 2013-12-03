@@ -83,6 +83,10 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $data = array();
         $resultSet = $this->client->search($parameters);
 
+        if (isset($resultSet['status']) && 400 === $resultSet['status']) {
+            throw new \Exception('Invalid query');
+        }
+
         if (!isset($resultSet['hits'])) {
             return $data;
         }
@@ -116,8 +120,8 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
     {
         $parameters = array();
         $parameters['index'] = $this->name;
-        $parameters['type']  = (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name);
-        $parameters['id']    = $element->getId();
+        $parameters['type'] = (!empty($this->options['collection_name']) ? $this->options['collection_name'] : $this->name);
+        $parameters['id'] = $element->getId();
 
         $body = array();
         foreach ($element->getIndexedData() as $fieldToIndex) {
@@ -163,35 +167,4 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
 
         return false;
     }
-
-    /**
-     *
-     * @param \Doctrine\MongoDB\Cursor $documents
-     * @param array $fields
-     *
-     * @return integer $i
-     */
-    /*
-    public function bulk(\Doctrine\MongoDB\Cursor $documents, array $fields)
-    {
-        $body = "";
-        $i = 0;
-        foreach ($documents as $document) {
-            $fieldsToIndex = array();
-            foreach ($fields as $field) {
-                $fieldsToIndex[$field] = $document[$field];
-            }
-            $index = array('index' => array(
-                '_index' => $this->index,
-                '_type'  => $this->type,
-                '_id'    => $document['_id']->{'$id'})
-            );
-            $body .= json_encode($index) . "\n" . json_encode($fieldsToIndex) . "\n\n";
-            $i++;
-        }
-        $this->client->bulk(array('body' => $body));
-
-        return $i;
-    }
-    */
 }

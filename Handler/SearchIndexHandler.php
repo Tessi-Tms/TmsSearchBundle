@@ -75,7 +75,7 @@ class SearchIndexHandler
             $data['page'] = $page;
             $data['hasNext'] = ($data['total'] > $page * $limit ? true : false);
         } catch (\Exception $e) {
-            return $data;
+            throw new \Exception('Invalid query');
         }
 
         return $data;
@@ -91,6 +91,7 @@ class SearchIndexHandler
     private function searchAndFetch($manager, $indexName, $query, $page)
     {
         $data = $this->search($indexName, $query, $page);
+
         if (0 === $data['count']) {
             return $data;
         }
