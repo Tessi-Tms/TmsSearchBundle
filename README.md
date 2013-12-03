@@ -68,8 +68,8 @@ tms_search:
                 options:
                     host: %tms_search_host%                                 # Indexer host (required)
                     port: %tms_search_port%                                 # Indexer port (required)
-                    collection_name: participation                          # Indexer collection name (optionnal)
-                    query_limit: 20                                         # Indexer query limit
+                    collection_name: participation                          # Indexer collection name (optional)
+                    query_limit: 20                                         # Indexer query limit (optional)
 
 ```
 
@@ -124,11 +124,16 @@ public function getIndexedData()
 
 Here are some examples of query:
 ``` php
-$query = 'John';            // Match. Search on all fields
-$query = 'Jo*';             // Wildcard. Search on all fields
-$query = 'firstName:John';  // Match on a specific field
-$query = 'phone:064*';      // Wildcard on a specific field
+$query = 'John';                            // Match. Search on all fields
+$query = 'Jo*';                             // Wildcard. Search on all fields
+$query = 'firstName:John';                  // Match on a specific field
+$query = 'phone:064*';                      // Wildcard on a specific field
+$query = 'lastName:bruno AND firstName=c*'; // Multiple fields
 ````
+Check out for more query examples on the Lucene official documentation:
+
+http://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+
 
 ``` php
 $indexName = 'tms_participation';                                   // After the index name you defined in app/config/config.yml
@@ -179,17 +184,27 @@ $data = $searchIndexHandler->search($indexName, $query, $page);
 The max size of the elements returned by the function is 10 by default.
 This value can be overwritten with the query_limit option of the indexer.
 
+#### Console
+
+In order to start and index all the data of an index you just configured, run this following command:
+
+`php app/console tms:search:index [index] [manager] (--verbose)`
+
+Here is an example:
+```sh
+php app/console tms:search:index tms_participation ODM --verbose
+```
 
 
 Elastic Search
 --------------
 
-In order to install Elastic Search, you have to follow these steps:
+In order to install an Elastic Search cluster, you have to follow these steps:
 
 1. Download and unzip the latest Elasticsearch distribution. 
 You can find it here: http://www.elasticsearch.org/download/
 
-2. Launch a node (an instance of elastic search):
+2. Launch one or several node(s) (a node is an instance of elastic search):
 
 ``` sh
 bin/elasticsearch -f
