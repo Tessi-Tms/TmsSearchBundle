@@ -128,7 +128,7 @@ class SearchIndexHandler
      * @param string $query
      * @param Object $entityManager
      */
-    public function searchAndFetchEntity($indexName, $query, $entityManager = null)
+    public function searchAndFetchEntity($indexName, $query, $page = 1, $entityManager = null)
     {
         if (!$entityManager) {
             $entityManager = $this->doctrine->getEntityManager();
