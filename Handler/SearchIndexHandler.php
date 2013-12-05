@@ -118,7 +118,6 @@ class SearchIndexHandler
             $documentManager = $this->doctrineMongoDB->getManager();
         }
 
-
         return $this->searchAndFetch($documentManager, $indexName, $query, $page);
     }
 

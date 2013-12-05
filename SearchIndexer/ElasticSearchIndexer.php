@@ -81,6 +81,7 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         );
 
         $data = array();
+        $data['data'] = array();
         $resultSet = $this->client->search($parameters);
 
         if (isset($resultSet['status']) && 400 === $resultSet['status']) {
@@ -98,7 +99,6 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         if (isset($hits['hits'])) {
             $data['count'] = count($hits['hits']);
             if ($data['count'] > 0) {
-                $data['data'] = array();
                 foreach ($hits['hits'] as $hit) {
                     $result = array();
                     $result['id'] = $hit['_id'];
