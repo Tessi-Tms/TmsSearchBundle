@@ -12,3 +12,7 @@ services:
     tms_search.handler:
         class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler
         arguments: []
+
+    tms_search.event.subscriber.indexer:
+        class: Tms\Bundle\SearchBundle\Event\Subscriber\IndexerSubscriber
+        arguments: [@tms_search.handler]

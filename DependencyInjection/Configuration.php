@@ -58,6 +58,14 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('options')
                     ->prototype('variable')->end()
                 ->end()
+                ->arrayNode('events')
+                    ->children()
+                        ->scalarNode('create')->end()
+                        ->scalarNode('update')->end()
+                        ->scalarNode('delete')->end()
+                    ->end()
+                ->end()
+                ->scalarNode('event_element')->end()
             ->end()
         ;
 

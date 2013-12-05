@@ -14,11 +14,17 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
+use Tms\Bundle\SearchBundle\Event\IndexerListener;
+
 class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        //die(var_dump($container->getParameter('tms_search_default_query_limit')));
+
+        $eventDispatcherDefinition = $container->getDefinition('event_dispatcher');
+        $eventListener = $container->getDefinition('tms_search.event.subscriber.indexer');
+        $subscribedEvents = array();
+
         $configuration = $container->getParameter('tms_search');
         $indexes = $configuration['indexes'];
         if (!$container->hasDefinition('tms_search.handler')) {
@@ -45,7 +51,19 @@ class IndexerCompilerPass implements CompilerPassInterface
                 'addIndexer',
                 array($name, $index['class'], new Reference($indexerServiceName))
             );
+
+            if (isset($index['indexer']['events'])) {
+                foreach ($index['indexer']['events'] as $action => $eventName) {
+                    $subscribedEvents[$action] = $eventName;
+                }
+            }
         }
+
+        $eventListener->addArgument($subscribedEvents);
+        $eventDispatcherDefinition->addMethodCall(
+            'addSubscriber',
+            array(new Reference('tms_search.event.subscriber.indexer'))
+        );
 
         $doctrine = null;
         $doctrineMongoDB = null;
