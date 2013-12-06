@@ -4,6 +4,7 @@ namespace Tms\Bundle\SearchBundle\Event\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Tms\Bundle\SearchBundle\Handler\SearchIndexHandler;
+use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 
 class IndexerSubscriber implements EventSubscriberInterface
 {
@@ -82,7 +83,8 @@ class IndexerSubscriber implements EventSubscriberInterface
     {
         $reflectionClass = new \ReflectionClass($event);
         $methods = $reflectionClass->getMethods();
-        $getMethodName = $methods[1]->getName();
-        return $event->$getMethodName();
+        $getter = $methods[1]->getName();
+
+        return $event->$getter();
     }
 }
