@@ -9,7 +9,6 @@
 
 namespace Tms\Bundle\SearchBundle\SearchIndexer;
 
-use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 

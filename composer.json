@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "Symfony Search bundle",
     "keywords": [],
-    "license": "",
+    "license": "GPL",
     "authors": [
         {
             "name": "TESSI MARKETING",

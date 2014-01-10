@@ -14,8 +14,6 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
-use Tms\Bundle\SearchBundle\Event\IndexerListener;
-
 class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

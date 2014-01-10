@@ -15,6 +15,7 @@ use Tms\Bundle\SearchBundle\Exception\UndefinedIndexerException;
 use Tms\Bundle\SearchBundle\Exception\UndefinedRepositoryException;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchIndexHandler
 {
@@ -235,11 +236,12 @@ class SearchIndexHandler
     }
 
     /**
+     * Batch index documents
      *
      * @param string $indexName
-     * @param Object $documentManager
+     * @param OutputInterface $documentManager
      */
-    public function batchIndexDocuments($indexName, $output, $documentManager = null)
+    public function batchIndexDocuments($indexName, OutputInterface $output, $documentManager = null)
     {
         if (!$documentManager) {
             $documentManager = $this->doctrineMongoDB->getManager();
@@ -252,9 +254,9 @@ class SearchIndexHandler
     /**
      *
      * @param string $indexName
-     * @param Object $entityManager
+     * @param OutputInterface $entityManager
      */
-    public function batchIndexEntities($indexName, $output, $entityManager = null)
+    public function batchIndexEntities($indexName, OutputInterface $output, $entityManager = null)
     {
         if (!$entityManager) {
             $entityManager = $this->doctrine->getEntityManager();
@@ -267,10 +269,10 @@ class SearchIndexHandler
      *
      * @param Object $manager
      * @param string $indexName
-     * @param Object $output
+     * @param OutputInterface $output
      * @return integer $indexedElements
      */
-    public function batchIndex($manager, $indexName, $output)
+    public function batchIndex($manager, $indexName, OutputInterface $output)
     {
         $repository = $this->getRepository($manager, $indexName);
         $elements = $repository->findAll();

@@ -4,7 +4,7 @@ namespace Tms\Bundle\SearchBundle\Event\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Tms\Bundle\SearchBundle\Handler\SearchIndexHandler;
-use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
+use Symfony\Component\EventDispatcher\Event;
 
 class IndexerSubscriber implements EventSubscriberInterface
 {
@@ -40,28 +40,25 @@ class IndexerSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param Object $event
-     * @return Object
+     * @param Event $event
      */
-    public function onCreateIndexerPost($event)
+    public function onCreateIndexerPost(Event $event)
     {
         $this->getSearchIndexHandler()->index($this->getElement($event));
     }
 
     /**
-     * @param Object $event
-     * @return Object
+     * @param Event $event
      */
-    public function onUpdateIndexerPost($event)
+    public function onUpdateIndexerPost(Event $event)
     {
         $this->getSearchIndexHandler()->index($this->getElement($event));
     }
 
     /**
-     * @param Object $event
-     * @return Object
+     * @param Event $event
      */
-    public function onDeleteIndexerPre($event)
+    public function onDeleteIndexerPre(Event $event)
     {
         $this->getSearchIndexHandler()->unIndex($this->getElement($event));
     }
@@ -76,10 +73,10 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     /**
      *
-     * @param Object $event
+     * @param Event $event
      * @return Object
      */
-    private function getElement($event)
+    private function getElement(Event $event)
     {
         $reflectionClass = new \ReflectionClass($event);
         $methods = $reflectionClass->getMethods();

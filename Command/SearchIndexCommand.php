@@ -5,7 +5,6 @@ namespace Tms\Bundle\SearchBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 class SearchIndexCommand extends AbstractCommand
 {
@@ -15,7 +14,7 @@ class SearchIndexCommand extends AbstractCommand
             ->setName('tms:search:index')
             ->setDescription('This task intends for indexing elements')
             ->addArgument('index', InputArgument::REQUIRED, 'The index you want to create')
-            ->addArgument('manager', InputArgument::REQUIRED, 'The object manager (ORM || ODM)')
+            ->addArgument('manager', InputArgument::REQUIRED, 'The object manager ("entity" or "document")')
         ;
     }
 
@@ -26,15 +25,15 @@ class SearchIndexCommand extends AbstractCommand
         $indexName = $input->getArgument('index');
         $managerType = $input->getArgument('manager');
 
-        if ('ODM' !== $managerType && 'ORM' !== $managerType) {
+        if ('document' !== $managerType && 'entity' !== $managerType) {
             if (true === $verbose) {
-                $output->writeln('<error>Wrong manager (should be ODM or ORM)</error>');
+                $output->writeln('<error>Wrong manager (should be "entity" or "document")</error>');
             }
-            exit;
+            return;
         }
 
         $searchIndexHandler = $this->getContainer()->get('tms_search.handler');
-        if ('ODM' === $managerType) {
+        if ('document' === $managerType) {
             $indexedElements = $searchIndexHandler->batchIndexDocuments($indexName, ($verbose ? $output : null));
         } else {
             $indexedElements = $searchIndexHandler->batchIndexEntities($indexName, ($verbose ? $output : null));
