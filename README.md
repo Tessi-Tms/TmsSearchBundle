@@ -60,6 +60,7 @@ How to use it
 # app/config/config.yml
 
 tms_search:
+    event_dispatcher: tms_participation.event_dispatcher                    # Event Dispatcher (optional)
     indexes:
         tms_participation:                                                  # Name of your index
             class: Tms\Bundle\ParticipationBundle\Document\Participation    # Class of the element
