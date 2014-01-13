@@ -18,16 +18,16 @@ class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $eventDispatcherDefinition = $container->getDefinition('event_dispatcher');
-        $eventListener = $container->getDefinition('tms_search.event.subscriber.indexer');
-        $subscribedEvents = array();
-
         $configuration = $container->getParameter('tms_search');
         $indexes = $configuration['indexes'];
         if (!$container->hasDefinition('tms_search.handler')) {
             return;
         }
+
+        $eventDispatcherDefinition = $container->getDefinition($configuration['event_dispatcher']);
+        $eventListener = $container->getDefinition('tms_search.event.subscriber.indexer');
         $handlerDefinition = $container->getDefinition('tms_search.handler');
+        $subscribedEvents = array();
 
         foreach ($indexes as $name => $index) {
             $serviceName = $index['indexer']['service_name'];

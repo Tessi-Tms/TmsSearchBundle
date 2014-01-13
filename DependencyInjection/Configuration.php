@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('event_dispatcher')->defaultValue('event_dispatcher')->end()
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')

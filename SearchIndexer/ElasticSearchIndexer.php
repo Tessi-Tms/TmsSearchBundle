@@ -130,7 +130,9 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
                 'json' === $fieldToIndex['options']['type']
             ) {
                 $data = json_decode($fieldToIndex['value'], true);
-                $body = array_merge($body, $data);
+                if (null !== $data) {
+                    $body = array_merge($body, $data);
+                }
             } else {
                 $body[$fieldToIndex['key']] = $fieldToIndex['value'];
             }
