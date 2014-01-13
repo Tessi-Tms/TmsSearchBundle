@@ -192,7 +192,7 @@ In order to start and index all the data of an index you just configured, run th
 
 Here is an example:
 ```sh
-php app/console tms:search:index tms_participation ODM --verbose
+php app/console tms:search:index tms_participation document --verbose
 ```
 
 
