@@ -238,10 +238,11 @@ class SearchIndexHandler
     /**
      * Batch index documents
      *
-     * @param string $indexName
-     * @param OutputInterface $documentManager
+     * @param string               $indexName
+     * @param OutputInterface|null $output
+     * @param Object|null          $documentManager
      */
-    public function batchIndexDocuments($indexName, OutputInterface $output, $documentManager = null)
+    public function batchIndexDocuments($indexName, OutputInterface $output = null, $documentManager = null)
     {
         if (!$documentManager) {
             $documentManager = $this->doctrineMongoDB->getManager();
@@ -253,10 +254,11 @@ class SearchIndexHandler
 
     /**
      *
-     * @param string $indexName
-     * @param OutputInterface $entityManager
+     * @param string               $indexName
+     * @param OutputInterface|null $output
+     * @param Object|null          $entityManager
      */
-    public function batchIndexEntities($indexName, OutputInterface $output, $entityManager = null)
+    public function batchIndexEntities($indexName, OutputInterface $output = null, $entityManager = null)
     {
         if (!$entityManager) {
             $entityManager = $this->doctrine->getEntityManager();
@@ -267,12 +269,12 @@ class SearchIndexHandler
 
     /**
      *
-     * @param Object $manager
-     * @param string $indexName
-     * @param OutputInterface $output
-     * @return integer $indexedElements
+     * @param Object               $manager
+     * @param string               $indexName
+     * @param OutputInterface|null $output
+     * @return integer             $indexedElements
      */
-    public function batchIndex($manager, $indexName, OutputInterface $output)
+    public function batchIndex($manager, $indexName, OutputInterface $output = null)
     {
         $repository = $this->getRepository($manager, $indexName);
         $elements = $repository->findAll();

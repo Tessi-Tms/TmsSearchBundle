@@ -6,9 +6,6 @@ services:
         class: Tms\Bundle\SearchBundle\SearchIndexer\ElasticSearchIndexer
         abstract: true
 
- #   tms_search.indexer.lucenesearch:
- #       class: Tms\Bundle\SearchBundle\SearchIndexer\LuceneSearchIndexer
-
     tms_search.handler:
         class: Tms\Bundle\SearchBundle\Handler\SearchIndexHandler
         arguments: []

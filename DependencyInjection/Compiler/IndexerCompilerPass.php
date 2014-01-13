@@ -18,7 +18,6 @@ class IndexerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-
         $eventDispatcherDefinition = $container->getDefinition('event_dispatcher');
         $eventListener = $container->getDefinition('tms_search.event.subscriber.indexer');
         $subscribedEvents = array();
