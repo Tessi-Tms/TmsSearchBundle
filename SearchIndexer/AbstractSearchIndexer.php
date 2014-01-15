@@ -61,6 +61,6 @@ abstract class AbstractSearchIndexer implements SearchIndexerInterface
      */
     public function getQueryLimit()
     {
-        return $this->options['query_limit'];
+        return isset($this->options['query_limit']) ? (int)$this->options['query_limit'] : $this->defaultQueryLimit;
     }
 }

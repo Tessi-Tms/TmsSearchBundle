@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('event_dispatcher')->defaultValue('event_dispatcher')->end()
+                ->scalarNode('default_query_limit')->defaultValue(10)->end()
                 ->arrayNode('indexes')
                     ->useAttributeAsKey('name')
                     ->prototype('array')

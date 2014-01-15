@@ -33,6 +33,7 @@ class TmsSearchExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('tms_search', $config);
+        $container->setParameter('tms_search.default_query_limit', (int)$config['default_query_limit']);
     }
 
     /**

@@ -1,6 +1,3 @@
-parameters:
-    tms_search_default_query_limit: 10
-
 services:
     tms_search.indexer.elasticsearch:
         class: Tms\Bundle\SearchBundle\SearchIndexer\ElasticSearchIndexer

@@ -37,7 +37,7 @@ class IndexerCompilerPass implements CompilerPassInterface
             $indexerDefinition = new DefinitionDecorator($serviceName);
             $indexerDefinition
                 ->addArgument($index['indexer']['options'])
-                ->addArgument($container->getParameter('tms_search_default_query_limit'))
+                ->addArgument($container->getParameter('tms_search.default_query_limit'))
                 ->addMethodCall('setName', array($name))
             ;
 
