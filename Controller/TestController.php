@@ -34,7 +34,7 @@ class TestController extends Controller
         $participationHandler = $this->container->get('tms_participation.handler.participation');
         $participations = $participationHandler->retrieveRawParticipations(
                 null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, $query);
+                null, null, null, null, null, $query);
         die(var_dump($participations));
     }
 
