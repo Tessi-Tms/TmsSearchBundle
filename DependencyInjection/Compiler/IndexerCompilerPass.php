@@ -29,6 +29,7 @@ class IndexerCompilerPass implements CompilerPassInterface
         $handlerDefinition = $container->getDefinition('tms_search.handler');
         $subscribedEvents = array();
 
+        $i = 0;
         foreach ($indexes as $name => $index) {
             $serviceName = $index['indexer']['service_name'];
             if (!$container->hasDefinition($serviceName)) {
@@ -51,9 +52,10 @@ class IndexerCompilerPass implements CompilerPassInterface
 
             if (isset($index['indexer']['events'])) {
                 foreach ($index['indexer']['events'] as $action => $eventName) {
-                    $subscribedEvents[$action] = $eventName;
+                    $subscribedEvents[$i][$action] = $eventName;
                 }
             }
+            $i++;
         }
 
         $eventListener->addArgument($subscribedEvents);

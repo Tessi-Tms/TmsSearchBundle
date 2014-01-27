@@ -25,9 +25,12 @@ class IndexerSubscriber implements EventSubscriberInterface
             'update' => 'onUpdateIndexerPost',
             'delete' => 'onDeleteIndexerPre',
         );
+
         self::$subscribedEvents = array();
-        foreach ($subscribedEvents as $action => $eventName) {
-            self::$subscribedEvents[$eventName] = array(self::$indexerEvents[$action], 0);
+        foreach ($subscribedEvents as $subscribedEvent) {
+            foreach ($subscribedEvent as $action => $eventName) {
+                self::$subscribedEvents[$eventName] = array(self::$indexerEvents[$action], 0);
+            }
         }
     }
 
