@@ -12,8 +12,8 @@ class SearchIndexCommand extends AbstractCommand
     {
         $this
             ->setName('tms:search:index')
-            ->setDescription('This task intends for indexing elements')
-            ->addArgument('index', InputArgument::REQUIRED, 'The index you want to create')
+            ->setDescription('This task intends for indexing elements. Example: tms:search:index tms_complaint entity -v')
+            ->addArgument('index', InputArgument::REQUIRED, 'The index you want to create - based on your configuration file')
             ->addArgument('manager', InputArgument::REQUIRED, 'The object manager ("entity" or "document")')
         ;
     }
