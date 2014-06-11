@@ -16,6 +16,7 @@ use Tms\Bundle\SearchBundle\Exception\UndefinedRepositoryException;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\Console\Output\OutputInterface;
+use Elasticsearch\Common\Exceptions\Curl\CouldNotResolveHostException;
 
 class SearchIndexHandler
 {
@@ -40,10 +41,10 @@ class SearchIndexHandler
     /**
      * Add an indexer
      *
-     * @param string $indexName
-     * @param string $className
-     * @param SearchIndexerInterface $indexer
-     * @return \Tms\Bundle\SearchBundle\handler\SearchIndexHandler
+     * @param  string $indexName
+     * @param  string $className
+     * @param  SearchIndexerInterface $indexer
+     * @return SearchIndexHandler
      */
     public function addIndexer($indexName, $className, SearchIndexerInterface $indexer)
     {
@@ -54,10 +55,9 @@ class SearchIndexHandler
     }
 
     /**
-     * @param string $indexName
-     * @param string $query
-     * @return array $data
-     *
+     * @param  string $indexName
+     * @param  string $query
+     * @return array
      */
     public function search($indexName, $query, $page = 1)
     {
@@ -67,35 +67,27 @@ class SearchIndexHandler
             $offset = $page * $limit - $limit;
         }
 
-        $data = array();
-        try {
-            $data = $this
-                ->getIndexerByIndexName($indexName)
-                ->search($query, $offset, $limit)
-            ;
-            $data['page'] = $page;
-            $data['hasNext'] = ($data['total'] > $page * $limit ? true : false);
-        } catch (\Exception $e) {
-            throw new \Exception('Invalid query');
-        }
+        $data = $this
+            ->getIndexerByIndexName($indexName)
+            ->search($query, $offset, $limit)
+        ;
+        $data['page'] = $page;
+        $data['hasNext'] = ($data['total'] > $page * $limit ? true : false);
+
 
         return $data;
     }
 
     /**
      *
-     * @param Object $manager
-     * @param string $indexName
-     * @param string $query
-     * @return array $data;
+     * @param  Object $manager
+     * @param  string $indexName
+     * @param  string $query
+     * @return array;
      */
     private function searchAndFetch($manager, $indexName, $query, $page)
     {
         $data = $this->search($indexName, $query, $page);
-
-        if (0 === $data['count']) {
-            return $data;
-        }
 
         $repository = $this->getRepository($manager, $indexName);
         $results = array();
@@ -156,7 +148,7 @@ class SearchIndexHandler
     }
 
     /**
-     * @param IndexableElementInterface $element
+     * @param  IndexableElementInterface $element
      * @return boolean
      */
     public function unIndex(IndexableElementInterface $element)
@@ -184,7 +176,7 @@ class SearchIndexHandler
 
     /**
      *
-     * @param string $className
+     * @param  string $className
      * @throws UndefinedIndexerException
      */
     private function getIndexerByClassName($className)
@@ -198,7 +190,7 @@ class SearchIndexHandler
 
     /**
      *
-     * @param string $indexName
+     * @param  string $indexName
      * @throws UndefinedIndexerException
      * @return SearchIndexerInterface
      */
@@ -272,7 +264,7 @@ class SearchIndexHandler
      * @param Object               $manager
      * @param string               $indexName
      * @param OutputInterface|null $output
-     * @return integer             $indexedElements
+     * @return integer
      */
     public function batchIndex($manager, $indexName, OutputInterface $output = null)
     {
