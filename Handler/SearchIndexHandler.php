@@ -66,7 +66,6 @@ class SearchIndexHandler
         if (!empty($page) && is_numeric($page) && $page >= 1) {
             $offset = $page * $limit - $limit;
         }
-
         $data = $this
             ->getIndexerByIndexName($indexName)
             ->search($query, $offset, $limit)
@@ -199,7 +198,6 @@ class SearchIndexHandler
         if (!isset($this->indexers[$indexName])) {
             throw new UndefinedIndexerException($indexName);
         }
-
         return $this->indexers[$indexName];
     }
 

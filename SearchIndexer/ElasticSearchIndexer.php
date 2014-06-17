@@ -83,7 +83,6 @@ final class ElasticSearchIndexer extends AbstractSearchIndexer
         $data = array();
         $data['data'] = array();
         $resultSet = $this->client->search($parameters);
-
         if (isset($resultSet['status']) && 400 === $resultSet['status']) {
             throw new \Exception('Unexpected error');
         }
