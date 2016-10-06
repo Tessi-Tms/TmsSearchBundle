@@ -24,9 +24,9 @@ class IndexerCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $eventDispatcherDefinition = $container->getDefinition($configuration['event_dispatcher']);
-        $eventListener = $container->getDefinition('tms_search.event.subscriber.indexer');
-        $handlerDefinition = $container->getDefinition('tms_search.handler');
+        $eventDispatcherDefinition = $container->findDefinition($configuration['event_dispatcher']);
+        $eventListener = $container->findDefinition('tms_search.event.subscriber.indexer');
+        $handlerDefinition = $container->findDefinition('tms_search.handler');
         $subscribedEvents = array();
 
         $i = 0;
