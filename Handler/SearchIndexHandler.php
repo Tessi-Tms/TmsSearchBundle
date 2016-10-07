@@ -7,7 +7,7 @@
  *
  */
 
-namespace Tms\Bundle\SearchBundle\handler;
+namespace Tms\Bundle\SearchBundle\Handler;
 
 use Tms\Bundle\SearchBundle\IndexableElement\IndexableElementInterface;
 use Tms\Bundle\SearchBundle\SearchIndexer\SearchIndexerInterface;
