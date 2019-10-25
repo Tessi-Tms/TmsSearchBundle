@@ -9,4 +9,4 @@ services:
 
     tms_search.event.subscriber.indexer:
         class: Tms\Bundle\SearchBundle\Event\Subscriber\IndexerSubscriber
-        arguments: [@tms_search.handler]
+        arguments: ['@tms_search.handler']
